@@ -1,0 +1,164 @@
+/*
+Nome file: MATEMADF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 11'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+MATEMA: Altre funzioni matematiche (valut. polin. ecc.)
+   OPEMAT: Operazioni matriciali
+      Prod_matr()
+      Trasposta()
+      Inversa()
+   POLINO: Valutazione di un polinomio per una data ascissa
+      Valuta_polinomio()
+   SUPCOM: Equazioni per la superficie di compatibilità e metodo risolutivo
+           di Newton
+      Mnewt()
+      Rotazione_quaternionica()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   OPEMAT
+---------------------------------------------------------------------------
+
+Prod_matr()
+°°°°°°°°°°°
+Input da parametri:
+   double huge **m1 : matrice primo fattore del prodotto
+   int r1, int c1 : righe e colonne di m1
+   double huge **m2 : matrice secondo fattore del prodotto
+   int r2, int c2 : righe e colonne di m2
+Elaborazioni: esegue il prodotto matriciale di m1 per m2 (mr=m1 x m2)
+Output su parametri:
+   double huge **mr : matrice r1 x c2 risultante
+
+Trasposta()
+°°°°°°°°°°°
+Input da parametri:
+   double huge **m : matrice da trasporre
+   int r, int c : righe e colonne di m
+Elaborazioni: traspone m
+Output su parametri:
+   double huge **mr : matrice trasposta
+
+Inversa()
+°°°°°°°°°
+Input da parametri:
+   double huge **m : matrice non singolare da invertire
+   int n : ordine di m
+Elaborazioni: inverte m segnalando errore se m è singolare
+Output su parametri:
+   double huge **mr : matrice inversa
+Relazione con altre funzioni:
+   usa:
+ludcmp(), lubksb() servono per il calcolo dell' inversa come descritto a
+   pag. 45 di Numerical Recipes in C (riferimento [4] nella tesi)
+matrix(), vector(), ivector(), free_matrix(), free_vector(), free_ivector()
+
+---------------------------------------------------------------------------
+   POLINO
+---------------------------------------------------------------------------
+
+Valuta_polinomio()
+°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   int ord : ordine del polinomio
+   double x : ascissa in cui valutare il polinomio
+   double huge *coeff : vettore degli ord+1 coefficienti del polinomio
+Elaborazioni: valuta il polinomio in x ovvero calcola:
+   coeff[ord]*x^ord+coeff[ord-1]*x^(ord-1)+..+coeff[1]*x+coeff[0]
+Output su valore di ritorno: double
+   risultato della valutazione
+
+---------------------------------------------------------------------------
+   SUPCOM
+---------------------------------------------------------------------------
+
+Mnewt()
+°°°°°°°
+Input da parametri:
+   int ntrial : numero massimo di tentativi di miglioramento delle funzioni
+      che è possibile fare
+   double huge *x : valore delle variabili di cui le funzioni di cui
+      cerchiamo gli zeri sono funzione, e dal quale si parte per cercare
+      le soluzioni (guess values)
+   int n : numero di funzioni di cui cerchiamo gli zeri
+   float tolx : valore minimo degli incrementi di x raggiunto il quale
+      si esce
+   float tolf : valore delle funzioni raggiunto il quale si esce
+   struct vettore *s1 : i vettori che congiungono i punti di discontinuità
+   struct vettore *s2 : trovati dal taglio ovvero quelli indicati con
+   struct vettore *s3 : l1, l2, l3 nella tesi (§ 12.2). Vengono passati a
+      Rotazione_quaternionica()
+   int die : indica a quale dei due diedri devono riferirsi le equazioni.
+      Viene passato a Rotazione_quaternionica()
+Elaborazioni: questa funzione è descritta in Numerical Recipes in C a pg.
+   286 § 9.6 anche se qui è personalizzata con la funzione che interessa a
+   noi. Vengono fatti non più di ntrial tentativi di miglioramento della
+   soluzione aggiungendole ogni volta un incremento valutato col metodo di
+   Newton. Si esce anche quando la somma dei valori assoluti delle funzioni
+   scende sotto tolf e quando la somma dei valori assoluti degli incrementi
+   dati alle x scende sotto tolx. Le x sono le componenti del quaternione
+   che cerchiamo (vedi Rotazione_quaternionica()).
+Output su parametri:
+   double huge *x : nuovi valori delle variabili, più vicini alla soluzione
+Relazione con altre funzioni:
+   è_composta_da:
+Rotazione_quaternionica() che fornisce i valori delle funzioni di cui
+   cerchiamo gli zeri e le derivate parziali delle funzioni rispetto le
+   variabili
+   usa:
+ludcmp(), lubksb() necessarie per l' inversione della matrice delle
+   derivate parziali al fine del calcolo dell' incremento da dare alle x
+   per portarle più vicino alla soluzione
+ivector(), vector(), matrix(), free_ivector(), free_vector(), free_matrix()
+
+Rotazione_quaternionica()
+°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   double huge *q : le quattro componenti del quaternione che sono le
+      incognite che cerchiamo ovvero che sono le variabili in funzione
+      delle quali sono scritte le equazioni che cerchiamo di risolvere
+   struct vettore *s1 : i vettori che congiungono i punti di discontinuità
+   struct vettore *s2 : trovati dal taglio ovvero quelli indicati con
+   struct vettore *s3 : l1, l2, l3 nella tesi (§ 12.2)
+   int die : indica a quale dei due diedri devono riferirsi le equazioni
+Input da variabili globali:
+   DIE[] : parametri intrinseci dei due doppi diedri
+Elaborazioni: le equazioni da risolvere per trovare il quaternione q che
+   permette di esprimere la superficie di compatibilità sono le (48) del
+   § 12.2.3 della tesi (pg. 141). Questa funzione, dato il quaternione,
+   fornisce il valore dei membri sinistri delle equazioni (48) (i membri
+   destri sono zeri !) o meglio i loro opposti nel vettore bet. Inoltre
+   fornisce le derivate dei membri rispetto le componenti di q. Precisamente
+   alpha[i][j] è la derivata parziale del membro dell' equazione i-esima
+   rispetto la componente j-esima del quaternione ovvero q[j]. Per esprimere
+   i membri, occorre conoscere i vettori l1,l2,l3 come indicato nella (48).
+Output su parametri:
+   double huge **alpha : matrice delle derivate parziali delle equazioni
+      rispetto alle incognite (le componenti del quaternione)
+   double huge *bet : valori negati delle equazioni
+Relazione con altre funzioni:
+   usa:
+matrix(), free_matrix()
+
+*/

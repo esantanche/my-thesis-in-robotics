@@ -1,0 +1,405 @@
+/*
+Nome file: THGRUPPI.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ago 24'92
+
+###########################################################################
+   ELENCO DEI GRUPPI
+###########################################################################
+
+THMAIN: Modulo contenente il main del sistema
+   MAINFN: Inizializzazioni e menù principale
+   PRESEN: Videata di presentazione
+   PROVEF: Funzioni di prova
+MODPOL: Gestione modelli poliedrici
+   IMPOST: Impostazione del poliedro in uso
+   INTERS: Produzione misura di distanza
+   RUMORE: Simulazione rumore di misura
+GRABAS: Grafica di base
+   INIZIA: Inizializzazioni del sistema grafico
+   GESFIN: Gestione finestre (apri e chiudi)
+   CLPBRD: Invio videate alla Clipboard
+   DISEGN: Disegno di linee e punti su video in riferimento utente
+GEOMET: Funzioni geometriche (intersezioni elementari ecc.)
+   INTRET: Intersezione retta-piano, retta-cono, retta-cilindro
+   VISIBI: Funzioni che determinano la visibilità del punto
+           di intersezione tra la retta di proiezione e l' oggetto, da
+           parte del punto di vista (PSD)
+   INTSEG: Intersezione tra segmenti piani (per la creazione casuale di
+           modelli rotondi)
+   INTPIA: Intersezione di piano con cerchio
+   CRERET: Creazione di oggetti "retta"
+   PIANO3: Piano per tre punti (per il piano di taglio)
+   VETTOR: Funzioni vettoriali
+TAGLIO: Ottenimento di dati tridimensionali facendo inseguire al laser
+        percorsi rettilinei.
+   CREAZI: Creazione di tagli interni o da registrare in file
+   GESFIL: Creazione interattiva di tagli su dati dell' utente o casualmente
+           e gestione dei files
+   VISUAL: Visualizzazione di tagli registrati in file
+IMMAGI: Gestione immagini di distanza
+   CREAZI: Creazione immagini
+   VISUAL: Visualizzazione immagini
+UTILIT: Funzioni di utilità per i menu, per gli errori ecc.
+   DOMENU: Menù del sistema
+   ERRORI: Gestione errori
+   VARIEF: Funzioni varie
+   DEBUGF: Funzione per visualizzazioni di debugging
+NUMREC: Funzioni tratte da Numerical Recipes
+   SISLIN: Risoluzione sistemi lineari
+   UTILIT: Funzioni di utilità
+MATEMA: Funzione della superficie di compatibilità e altre funzioni
+        matematiche (valut. polin. ecc.)
+   OPEMAT: Operazioni matriciali
+   POLINO: Valutazione di un polinomio per una data ascissa
+   SUPCOM: Equazioni per la superficie di compatibilità e metodo risolutivo
+      di Newton
+RICDIS: Ricerca delle discontinuità in una taglio
+   PARTAG: Partizione di un taglio in segmenti di dati significativi e
+           in segmenti di punti indefiniti
+   TAPBUC: Riempimento dei singoli punti indefiniti (o coppie) che compaiono
+           in sequenze di punti definiti
+   VALRUM: Valutazione del rumore
+   TRODIS: Ricerca grossolana delle discontinuità
+FITTIN: Fitting di polinomi alle distanze
+   INIZIA: Inizializzazione dei filtri di fitting
+   ESTRAI: Funzioni ausiliarie per il fitting
+   DOFITT: Esecuzione del fitting
+LOCDIS: Localizzazione fine delle discontinuità
+   LOCDIS: Localizzazione fine delle discontinuità
+ANADIS: Chiamata alla funzione di localizzazione fine per ogni disc.
+        trovata grossolanamente in RICDIS
+   ANADIS: Funzioni per l' analisi di un taglio grossolano in cui sono state
+           rilevate le disconitinuità, ed effettuazione dei tagli fini
+           per poi localizzare finemente le discontinuità su di essi
+   ALLELD: Allocazione e deallocazione di memoria per gli elenchi
+           di discontinuità
+ERICPO: Lancio di un esperimento di riconoscimento dei poliedri
+   ERICPO: Lancio di un esperimento di riconoscimento dei poliedri
+
+###########################################################################
+   DESCRIZIONE DEI GRUPPI
+###########################################################################
+
+---------------------------------------------------------------------------
+   THMAIN
+---------------------------------------------------------------------------
+
+MAINFN
+°°°°°°
+   Funzione principale WinMain del sistema con inizializzazioni, chiamata
+della presentazione, eventuale chiamata delle prove, menù di ingresso
+
+PRESEN
+°°°°°°
+   Videata di presentazione
+
+PROVEF
+°°°°°°
+   Funzioni di prova attivate premendo 1 o 2 alla videata di presentazione.
+Contengono traccia del testing delle routine del sistema
+
+---------------------------------------------------------------------------
+   MODPOL
+---------------------------------------------------------------------------
+
+IMPOST
+°°°°°°
+   C'è la funzione che scrive in variabili globali i dati relativi a due
+doppi diedri e permette di selezionare uno di questi due poliedri come
+quello in uso impostando a 1 o 2 una varibile globale.
+
+INTERS
+°°°°°°
+   C'è la funzione che esegue misure di distanza sul poliedro in uso e che
+costituisce l' interfaccia tra i modelli poliedrici e gli algoritmi di
+rilevazione delle discont.
+
+RUMORE
+°°°°°°
+   C'è la funzione che simula il rumore di misura. Tale funzione è usata da
+Triangola_modpol() nell' esecuzione delle misure.
+
+---------------------------------------------------------------------------
+   GRABAS
+---------------------------------------------------------------------------
+
+INIZIA
+°°°°°°
+   C'è la funzione di inizializzazione della grafica richiamata in THMAIN
+e c'è la funzione che gestisce i messaggi inviati alla finestra grafica
+
+GESFIN
+°°°°°°
+   Ci sono le funzioni che aprono e chiudono la finestra grafica.
+Contestualmente alla chiusura è possibile inviare il contenuto della
+finestra alla Clipboard
+
+CLPBRD
+°°°°°°
+   C'è la funzione, richiamata in Chiudi_fin_graf, che invia la videata
+grafica alla Clipboard
+
+DISEGN
+°°°°°°
+   Ci sono le funzioni che permettono il disegno grafico. La funzione
+Usa_rif_2d permette di impostare il riferimento utente. I disegni possono
+così essere realizzati in coordinate utente invece che nelle coordinate
+dello schermo. La funzione Mostra_disegno è necessaria per visualizzare
+il disegno che viene composto in una area di memoria non visibile e deve
+quindi poi essere trasferito sul video. Ci sono poi le funzioni che
+disegnano linee, punti, croci, cerchi pieni e vuoti.
+
+---------------------------------------------------------------------------
+   GEOMET
+---------------------------------------------------------------------------
+
+INTRET
+°°°°°°
+   Si tratta delle funzioni usate in Triangola_modrot di GMTMDR per
+ottenere il dato di distanza relativo alla proiezione lungo una data
+retta del laser su di un dato oggetto in modo da ottenere una misura di
+distanza. Per fare ciò è necessario essere in grado di ottenere le
+intersezioni tra una retta ed un cono o un cilindro o un piano. Servono
+anche le normali al cono al cilindro o al piano per aggiungere poi il rumore
+di misura o di modello.
+
+VISIBI
+°°°°°°
+   Si tratta delle funzioni che servono a decidere se il punto risultante
+dall' intersezione della retta di proiezione con l' oggetto è visibile
+anche al punto di vista (PSD). In caso contrario non si ha misura.
+
+INTSEG
+°°°°°°
+   Sono due funzioni utilizzate nella creazione casuale di modelli rotondi.
+I segmenti di cui è composta la spezzata che definisce il modello, non
+possono intersecarsi e viene anche richiesto che vengano a trovarsi ad una
+certa distanza tra di loro
+
+INTPIA
+°°°°°°
+   C'è una funzione che ricerca le intersezioni tra un piano e un cerchio
+ovvero per es. tra un piano di taglio e uno spigolo di un modello rotondo
+dato che gli spigoli del modello rotondo sono tutti cerchi. Si usa questa
+funzione nella ricerca delle discontinuità che teoricamente si possono
+trovare in un taglio (vedi GMTMDR).
+
+CRERET
+°°°°°°
+   C'è la funzione che permette la creazione di un oggetto retta dati due
+punti, ed anche quella che permette di ottenere un punto da una retta dato
+il parametro (che a meno di un fattore è l' ascissa curvilinea della retta)
+corrispondente al punto.
+
+PIANO3
+°°°°°°
+   C'è la funzione che restituisce l' oggetto di tipo piano dati tre punti
+per i quali il piano deve passare. E' utilizzata per il calcolo del piano
+di taglio dati il punto di proiezione laser e il punto di inizio e
+quello di fine della retta di taglio.
+
+VETTOR
+°°°°°°
+   Si sono operazioni vettoriali che coinvolgono oggetti di tipo vettore
+ma anche oggetti di tipo retta e di tipo punto, e scalari. Ci sono somma
+e sottrazione vettoriali, prodotto scalare e vettoriale, coseno tra versori
+(da applicarsi a vettori di norma unitaria) ecc.
+
+---------------------------------------------------------------------------
+   TAGLIO
+---------------------------------------------------------------------------
+
+CREAZI
+°°°°°°
+   Ci sono le funzioni da utilizzare internamente per la creazione di tagli
+sia destinati alla registrazione in file (tagli questi limitati a 200
+punti), sia destinati all' utilizzo interno per es. nel corso di esperimenti
+di caratterizzazione statistica del sensore. Ci sono anche le funzioni
+che allocano e deallocano memoria per un taglio
+
+GESFIL
+°°°°°°
+   Qui ci sono le funzioni che interattivamente permettono la creazione
+interattiva o casuale di tagli da salvare su file. C'è anche la funzione
+che sceglie casualmente le rette di taglio per la generazione casuale dei
+tagli. Inoltre ci sono funzioni ausiliarie per la scelta interattiva di
+tagli e per il caricamento in memoria di tagli presenti su file
+
+VISUAL
+°°°°°°
+   Si tratta delle funzioni che permettono la visualizzazione dei tagli.
+C'è la visualizzazione dei dati identificativi del taglio e quelle grafiche.
+
+---------------------------------------------------------------------------
+   IMMAGI
+---------------------------------------------------------------------------
+
+CREAZI
+°°°°°°
+   C'è la funzione Crea_immagine che crea e salva in un file una immagine
+di distanza.
+
+VISUAL
+°°°°°°
+   C'è la funzione Visual_immagine che visualizza una immagine richiamando
+un programma esterno
+
+---------------------------------------------------------------------------
+   UTILIT
+---------------------------------------------------------------------------
+
+DOMENU
+°°°°°°
+   C'è la funzione Menu che visualizza il menù standard del sistema
+
+ERRORI
+°°°°°°
+   Funzione di gestione dei casi di errore
+
+VARIEF
+°°°°°°
+   Funzioni varie come Aspetta_return per attendere che si prema return,
+funzioni di conversione di stringhe in campi eliminando il NULL finale
+delle stringhe, funzioni di generazione di numeri casuali ecc.
+
+DEBUGF
+°°°°°°
+   Funzione usata per visualizzazioni nel corso del debugging
+
+---------------------------------------------------------------------------
+   NUMREC
+---------------------------------------------------------------------------
+
+SISLIN
+°°°°°°
+   Si tratta di funzioni che permettono la risoluzione di sistemi lineari
+oppure l' inversione matriciale
+
+UTILIT
+°°°°°°
+   Ci sono le funzioni che allocano e deallocano memoria per vettori e
+matrici i cui elementi sono interi oppure double. C'è anche una funzione
+di gestione degli errori riportata da Numerical Recipes in C e modificata
+in modo da richiamare la funzione Error di UTILIT
+
+---------------------------------------------------------------------------
+   MATEMA
+---------------------------------------------------------------------------
+
+OPEMAT
+°°°°°°
+   Ci sono operazioni matriciali: prodotto matriciale, trasposta, inversa
+
+POLINO
+°°°°°°
+   C'è una funzione che valuta un polinomio di dato ordine e di dati
+coefficienti in un punto.
+
+SUPCOM
+°°°°°°
+   C'è la funzione che cerca iterativamente gli zeri delle equazioni che
+definiscono la superficie di compatibilità con il metodo di Newton e c'è
+la funzione che restituisce il valore di tali equazioni alla funzione che
+ne cerca gli zeri.
+
+---------------------------------------------------------------------------
+   RICDIS
+---------------------------------------------------------------------------
+
+PARTAG
+°°°°°°
+   C'è la funzione Partiziona_taglio che suddivide un taglio in sequenze di
+punti in cui la misura di distanza non è pervenuta (punti indefiniti) e
+sequenze di punti in cui la misura è pervenuta (punti definiti). Se in una
+sequenza di punti definiti compaiono punti indefiniti isolati o coppie di
+punti indefiniti, essi vengono inglobati nella sequenza di punti definiti.
+Analogamente avviene per le sequenze di punti indefiniti.
+
+TAPBUC
+°°°°°°
+   C'è la funzione Tappa_buchi_dist che rende definiti i punti indefiniti
+isolati (o le coppie) trovati da Partiziona_taglio nelle sequenze di punti
+definiti, mettendoci valori di distanza ottenuti per interpolazione delle
+distanze ottenute nei punti adiacenti
+
+VALRUM
+°°°°°°
+   C'è la funzione Valuta_rumore che esegue la valutazione del rumore
+eseguendo fitting lineari di lunghezza 4 ed integrando con una informazione
+a priori
+
+TRODIS
+°°°°°°
+   C'è la funzione Trova_discontinuita che individua grossolanamente le
+discontinuità in un taglio grossolano con la tecnica dei fitting sfalsati
+di ordine progressivamente crescente.
+
+---------------------------------------------------------------------------
+   FITTIN
+---------------------------------------------------------------------------
+
+INIZIA
+°°°°°°
+   Ci sono le funzioni che allocano memoria per la descrizione dei filtri
+di fitting e che inizializzano il contenuto di tali filtri eseguendo i
+dovuti calcoli.
+
+ESTRAI
+°°°°°°
+   C'è una funzione, Estrai_segmento, utilizzata da Esegui_fitting per
+permettere un trattamento uniforme sia del fitting destro che di quello
+sinistro
+
+DOFITT
+°°°°°°
+   C'è la funzione che esegue il fitting applicando i filtri ai dati e
+restituendo i coefficienti del polinomio di fitting e la verosimiglianza
+del fitting o la valutazione del rumore.
+
+---------------------------------------------------------------------------
+   LOCDIS
+---------------------------------------------------------------------------
+
+LOCDIS
+°°°°°°
+   Funzione unica di localizzazione fine delle discontinuità
+
+---------------------------------------------------------------------------
+   ANADIS
+---------------------------------------------------------------------------
+
+ANADIS
+°°°°°°
+   C'è la funzione che analizza un taglio grossolano in cui sono state
+rilevate le discontinuità con le funzioni del modulo RICDIS, esegue tagli
+fini in corrispondenza di esse e localizza le discontinuità con la funzione
+del modulo LOCDIS. Restituisce l' elenco delle discontinuità. La funzione
+Calcola_retta_fine serve nella funzione Analizza_discontinuita per decidere
+il posizionamento della retta di taglio fine, dato il taglio grossolano e
+la posizione approssimativa della discontinuità trovata da RICDIS.
+
+ALLELD
+°°°°°°
+   Ci sono le funzioni che permettono di allocare e deallocare la memoria
+relativa ad un elenco di discontinuità.
+
+---------------------------------------------------------------------------
+   ERICPO
+---------------------------------------------------------------------------
+
+ERICPO
+°°°°°°
+   La funzione principale è Esperimento_di_ric_poliedri che viene
+richiamata nel menù di ingresso e serve a lanciare un esperimento di
+riconoscimento tra due doppi diedri. Le altre due funzioni,
+Presentazione_e_parametri e Esegui_un_riconoscimento, sono componenti di
+Esperimento_di_ric_poliedri. Precisamente Presentazione_e_parametri
+inserisce nel report prodotto tutti i parametri usati nell' esecuzione
+dell' esperimento. Esegui_un_riconoscimento viene utilizzata in
+Esperimento_di_ric_poliedri per l' esecuzione dei tagli e la rilevazione
+delle discontinuità per poi utilizzare la sup. di compatibilità per
+riconoscere il poliedro.
+
+*/

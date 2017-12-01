@@ -1,0 +1,89 @@
+/*
+Nome file: THMAINDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ago 25'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+THMAIN: Modulo contenente il main del sistema
+   MAINFN: Inizializzazioni e menù principale
+      WinMain()
+   PRESEN: Videata di presentazione
+      Presentazione()
+   PROVEF: Funzioni di prova
+      Prove_1()
+      Prove_2()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   MAINFN
+---------------------------------------------------------------------------
+
+WinMain()
+°°°°°°°°°
+Input da parametri:
+   HANDLE hInst : handle del programma
+   HANDLE hPrevInst : handle ad un eventuale precedente istanza del
+      programma
+   LPSTR lpCmdLine : puntatore ad una eventuale riga di comando usata
+      per chiamare il programma e contenente dei parametri
+   int nCmdShow : modo di visualizzazione della finestra del programma
+Elaborazioni: inizializza h_programma, inizializza la grafica, chiama
+   Presentazione() per la videata iniziale, chiama le funzioni Prova_1()
+   o Prova_2() se premendo il tasto come richiesto nella videata di
+   presentazione, si preme 1 o 2, visualizza il menù di ingresso
+Output su valore di ritorno: int
+   codice di ritorno, sempre 0
+Output su variabili globali:
+   h_programma : l' handle del programma che viene qui inizializzato con
+      hInst
+Relazione con altre funzioni:
+   è_composta_da:
+Inizializza_grafica() che esegue le inizializzazioni grafiche
+Presentazione() che visualizza la videata di presentazione
+Prove_1(), Prove_2() che contengono le prove relative al testing delle
+   funzioni del pacchetto
+Menu_1() che è il menù di gestione dei modelli rotondi ecc.
+tutte le funzioni chiamate nel menù di ingresso
+
+---------------------------------------------------------------------------
+   PRESEN
+---------------------------------------------------------------------------
+
+Presentazione()
+°°°°°°°°°°°°°°°
+Elaborazioni: visualizza la videata di presentazione
+
+---------------------------------------------------------------------------
+   PROVEF
+---------------------------------------------------------------------------
+
+Prove_1()
+°°°°°°°°°
+Elaborazioni: prima funzione che ha eseguito le prove per il testing delle
+   funzioni del sistema
+
+Prove_2()
+°°°°°°°°°
+Elaborazioni: seconda funzione che ha eseguito le prove per il testing delle
+   funzioni del sistema
+
+*/

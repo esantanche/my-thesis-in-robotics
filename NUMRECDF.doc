@@ -1,0 +1,185 @@
+/*
+Nome file: NUMRECDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ago 25'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+NUMREC: Funzioni tratte da Numerical Recipes
+   SISLIN: Risoluzione sistemi lineari
+      ludcmp()
+      lubksb()
+   UTILIT: Funzioni di utilità
+      vector()
+      ivector()
+      nrerror()
+      free_vector()
+      free_ivector()
+      matrix()
+      free_matrix()
+      imatrix()
+      free_imatrix()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   SISLIN
+---------------------------------------------------------------------------
+
+ludcmp()
+°°°°°°°°
+Input da parametri:
+   double huge **a : matrice di cui effettuare la decomposizione LU
+   int n : ordine della matrice
+Elaborazioni: esegue la decomposizione LU della matrice. Vedere Numerical
+   Recipes in C per i dettagli (pg. 39). Questa funzione va usata assieme
+   a lubksb() per calcolare l' inversa o risolvere sistemi lineari
+Output su parametri:
+   double huge **a : decomposizione LU della matrice
+   int huge *indx : vettore che mantiene traccia delle permutazioni di righe
+      fatte dall' algoritmo
+   double *d : è +1 o -1 a seconda che le permutazioni siano in numero pari
+      o dispari
+Output su valore di ritorno: BOOL
+   TRUE se la matrice è singolare
+Relazione con altre funzioni:
+   usa:
+vector(), free_vector()
+
+lubksb()
+°°°°°°°°
+Input da parametri:
+   double huge **a : decomposizione LU della matrice dei coefficienti
+   int n : ordine della matrice
+   int huge *indx : vettore che mantiene traccia delle permutazioni di righe
+      fatte dall' algoritmo
+   double huge *b : vettore dei termini noti
+Elaborazioni: si tratta di risolvere il sistema di equazioni lineari
+   ax=b. Però della matrice a dei coefficienti vogliamo la decomposizione
+   LU per cui andrà chiamata la funzione ludcmp() che fornirà anche indx.
+   Per dettagli vedere Numerical Recipes pg. 44.
+Output su parametri:
+   double huge *b : vettore delle soluzioni (x)
+
+---------------------------------------------------------------------------
+   UTILIT
+---------------------------------------------------------------------------
+
+vector()
+°°°°°°°°
+Input da parametri:
+   int nl : primo indice del vettore che può essere diverso da zero se non
+      si vuole un vettore di origine zero come al solito
+   int nh : ultimo indice del vettore
+Elaborazioni: alloca memoria per un vettore di double di lunghezza nh-nl+1
+Output su valore di ritorno: double huge *
+   puntatore al vettore allocato
+Relazione con altre funzioni:
+   usa:
+nrerror() funzione di segnalazione errori delle funzioni di NUMREC
+
+ivector()
+°°°°°°°°°
+Input da parametri:
+   int nl : primo indice del vettore che può essere diverso da zero se non
+      si vuole un vettore di origine zero come al solito
+   int nh : ultimo indice del vettore
+Elaborazioni: alloca memoria per un vettore di int di lunghezza nh-nl+1
+Output su valore di ritorno: int huge *
+   puntatore al vettore allocato
+Relazione con altre funzioni:
+   usa:
+nrerror() funzione di segnalazione errori delle funzioni di NUMREC
+
+nrerror()
+°°°°°°°°°
+Input da parametri:
+   char error_text[] : messaggio di errore (è una stringa)
+Elaborazioni: passa il messaggio di errore alla funzione Error()
+Relazione con altre funzioni:
+   usa:
+Error() che è la funzione di segnalazione standard dell' intero pacchetto
+   software
+
+free_vector()
+°°°°°°°°°°°°°
+Input da parametri:
+   double huge *v : puntatore al vettore da deallocare
+   int nl : primo indice del vettore (diverso da zero se il vettore non è
+      stato allocato in origine zero. vedi vector())
+Elaborazioni: dealloca il vettore di double puntato da v
+
+free_ivector()
+°°°°°°°°°°°°°°
+Input da parametri:
+   int huge *v : puntatore al vettore da deallocare
+   int nl : primo indice del vettore (diverso da zero se il vettore non è
+      stato allocato in origine zero. vedi vector())
+Elaborazioni: dealloca il vettore di int puntato da v
+
+matrix()
+°°°°°°°°
+Input da parametri:
+   int nrl : indice iniziale delle righe della matrice
+   int nrh : indice finale delle righe della matrice
+   int ncl : indice iniziale delle colonne della matrice
+   int nch : indice finale delle colonne della matrice
+Elaborazioni: alloca memoria per una matrice di dimensioni
+   (nrh-nrl+1) x (nch-ncl+1) di double
+Output su valore di ritorno: double huge **
+   puntatore alla matrice
+Relazione con altre funzioni:
+   usa:
+nrerror() funzione di segnalazione errori delle funzioni di NUMREC
+
+free_matrix()
+°°°°°°°°°°°°°
+Input da parametri:
+   double huge **m : puntatore alla matrice da deallocare
+   int nrl : indice iniziale delle righe della matrice
+   int nrh : indice finale delle righe della matrice
+   int ncl : indice iniziale delle colonne della matrice
+Elaborazioni: dealloca la matrice di double puntata da m
+
+imatrix()
+°°°°°°°°°
+Input da parametri:
+   int nrl : indice iniziale delle righe della matrice
+   int nrh : indice finale delle righe della matrice
+   int ncl : indice iniziale delle colonne della matrice
+   int nch : indice finale delle colonne della matrice
+Elaborazioni: alloca memoria per una matrice di dimensioni
+   (nrh-nrl+1) x (nch-ncl+1) di int
+Output su valore di ritorno: int huge **
+   puntatore alla matrice
+Relazione con altre funzioni:
+   usa:
+nrerror() funzione di segnalazione errori delle funzioni di NUMREC
+
+free_imatrix()
+°°°°°°°°°°°°°°
+Input da parametri:
+   int huge **m : puntatore alla matrice da deallocare
+   int nrl : indice iniziale delle righe della matrice
+   int nrh : indice finale delle righe della matrice
+   int ncl : indice iniziale delle colonne della matrice
+Elaborazioni: dealloca la matrice di int puntata da m
+
+*/

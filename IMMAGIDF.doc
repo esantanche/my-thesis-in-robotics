@@ -1,0 +1,78 @@
+/*
+Nome file: IMMAGIDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 7'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+IMMAGI: Gestione immagini di distanza
+   CREAZI: Creazione immagini
+      Crea_immagine()
+   VISUAL: Visualizzazione immagini
+      Visual_immagine()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   CREAZI
+---------------------------------------------------------------------------
+
+Crea_immagine()
+°°°°°°°°°°°°°°°
+Elaborazioni: il significato dei dati richiesti all' utente nella creazione
+   delle immagini è già stato esposto parlando dell' opzione n.ro 11 del
+   menù dei modelli rotondi ecc. nel manuale d'uso. Dopo la richiesta di
+   tali parametri, si effettuano i calcoli per identificare il quadro
+   immagine. L' immagine sarà composta effettuando 320 tagli disposti
+   verticalmente di 200 punti ciascuno in modo da ottenere una immagine
+   320 x 200 (320 colonne, 200 righe). I valori di distanza ottenuti
+   verranno memorizzati in una matrice (array) cercando i valori massimo e
+   minimo della distanza in modo poi da associare il livello più alto di
+   grigio (il bianco) alla minima distanza e il livello più basso (il nero)
+   alla massima distanza. Se il file in cui registrare l' immagine esiste
+   già, si ripete la richiesta del nome del file.
+Output su file: imm_file di path composto usando DIRECTORY_IMMAGINI,
+                il nome dato dall' utente ed ESTENSIONE_IMMAGINI
+   file che conterrà l'immagine
+Relazione con altre funzioni:
+   usa:
+Carica_modrot() carica il modello rotondo di cui fare l' immagine
+Crea_retta() che crea le rette di taglio
+Crea_taglio_rett_int() che genera i tagli che compongono l' immagine
+Alloca_taglio(), Dealloca_taglio() allocazione e deallocazione di memoria
+   per un taglio
+Versore_da_retta(), Coseno_tra_versori(), Prod_vett(), Punto_piu_vett()
+Vett_per_scal()
+
+---------------------------------------------------------------------------
+   VISUAL
+---------------------------------------------------------------------------
+
+Visual_immagine()
+°°°°°°°°°°°°°°°°°
+Elaborazioni: richiama la funzione esterna di visualizzazione delle
+   immagini. La funzione esterna presume di trovare le immagini nella
+   directory C:\THDATA con estensione IMG.
+Relazione con altre funzioni:
+   è_composta_da:
+programma esterno in BASIC VISUIMG.BAS di path completo C:\THBAS\VISUIMG.BAS
+   che visualizza una immagine chiedendone il nome senza estensione
+
+*/

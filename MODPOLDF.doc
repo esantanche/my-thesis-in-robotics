@@ -1,0 +1,145 @@
+/*
+Nome file: MODPOLDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 20'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+MODPOL: Gestione modelli poliedrici
+   IMPOST: Impostazione del poliedro in uso
+      Imposta poliedro()
+   INTERS: Produzione misura di distanza
+      Triangola_modpol()
+   RUMORE: Simulazione rumore di misura
+      Aggiungi_rumore_misura()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   IMPOST
+---------------------------------------------------------------------------
+
+Imposta_poliedro()
+°°°°°°°°°°°°°°°°°°
+Elaborazioni: inizializza i due doppi diedri POL[0] e POL[1] e i relativi
+   parametri intrinseci DIE[0] e DIE[1]. Chiede all' utente quale dei due
+   deve essere quello in uso e inizializza POLI di conseguenza: POLI vale
+   0 per il primo doppio diedro, 1 per il secondo.
+Output su variabili globali:
+   POL[] : descrizioni dei due doppi diedri
+   DIE[] : parametri intrinseci dei due doppi diedri
+   POLI : indicatore del poliedro in uso
+
+---------------------------------------------------------------------------
+   INTERS
+---------------------------------------------------------------------------
+
+Triangola_modpol()
+°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct retta r : retta di proiezione laser
+   struct punto pv : punto di vista
+Input da variabili globali:
+   POL[] : descrizioni dei due doppi diedri
+   POLI : indicatore del poliedro in uso
+Elaborazioni: vengono esaminate a turno le facce del poliedro alla ricerca
+   dell' intersezione della retta di proiezione con il poliedro. Si
+   interseca quindi la retta con il piano della faccia per poi verificare
+   che il punto P trovato sia dentro la faccia. Questo lo si fa verificando
+   che il prodotto vettoriale tra il vettore che congiunge un vertice V a P
+   e il vettore del lato della faccia che parte da V, sia equiverso con la
+   normale alla faccia. Questo per ogni vertice della faccia. Si cercano le
+   intersezioni con tutte le facce del poliedro. Quella valida sarà la più
+   vicina al punto di proiezione laser. Occorre poi fare la verifica della
+   visibilità del punto trovato dal PSD (punto di vista). In questo caso si
+   faranno le intersezioni della retta di vista con il poliedro. Ricordo che
+   la retta di vista è quella che congiunge il punto di vista con il punto
+   di intersezione della retta di proiezione con il poliedro. Passato il
+   test di visibilità, occorre fare il test "doppia faccia". Tale test
+   consiste in questo: può accadere che la retta di proiezione incontri una
+   faccia e formi su di essa uno spot, mentre il PSD è in grado di
+   vedere l' altra faccia della faccia (una faccia ha due facce) per cui
+   non vede in realtà lo spot. la normale alla faccia nel punto dello spot
+   deve allora essere confrontata con le direzioni della retta di
+   proiezione e della retta di vista. Se l' angolo tra la normale e la
+   retta di proiezione è acuto mentre l'angolo tra la normale e la retta di
+   vista è ottuso, vuol dire che punto di proiezione laser e punto di vista
+   sono in grado di vedere due diverse facce della faccia per cui il
+   punto di vista non sta in realtà vedendo lo spot. Allora la misura va
+   dichiarata indefinita. Viene infine aggiunto il rumore di misura.
+Output su parametri:
+   struct punto *pi : punto di intersezione ideale (senza rumore)
+   float *distanza : distanza del punto di intersezione dal punto di
+      proiezione laser
+   float *param_retta : parametro della retta di proiezione a cui
+      corrisponde il punto di intersezione
+   struct punto *pir : punto di intersezione rumoroso
+   float *dist_rum : distanza del punto di intersezione rumoroso dal punto
+      di proiezione laser
+Relazione con altre funzioni:
+   è_composta_da:
+Aggiungi_rumore_misura() che simula il rumore di misura
+   usa:
+Crea_retta(), Punto_da_retta(), Versore_da_retta()
+Vett_tra_punti(), Prod_vett(), Prod_scal(), Coseno_tra_versori()
+
+---------------------------------------------------------------------------
+   RUMORE
+---------------------------------------------------------------------------
+
+Aggiungi_rumore_misura()
+°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct retta rp : retta di proiezione
+   struct vettore n : normale alla superficie del modello nel punto in cui
+      si è rilevato il punto di intersezione della retta di proiezione laser
+      con il modello
+   struct punto pi : punto di intersezione della retta di proiezione laser
+      con il modello
+   struct punto pv : punto di vista
+Elaborazioni: si consideri la retta di proiezione laser. Va simulato l'
+   errore di puntamento del laser. Si calcola allora il versore della retta
+   di proiezione e vi si aggiunge un vettore ad esso perpendicolare (ce ne
+   sono infiniti, se ne sceglie uno a caso) di modulo tale da produrre una
+   deviazione dell' angolo del vettore di puntamento del laser che non
+   vada oltre la deviazione angolare data da DEV_ANG_MAX_LASER. Si ottiene
+   una nuova direzione per la retta di proiezione. Tale nuova retta di
+   proiezione viene intersecata con il piano tangente alla superficie del
+   modello nel punto di intersezione (pi). Una intersezione con la
+   superficie reale del modello sarebbe troppo onerosa. Il piano tangente
+   lo conosciamo grazie al parametro n (oltre che grazie a pi). Si
+   ottiene un nuovo punto di intersezione e, congiungendo tale nuovo punto
+   al punto di vista, si ottiene una retta di vista (diversa da quella
+   ideale). Si aggiunge una deviazione angolare casuale a tale retta di
+   vista ottenendo una definitiva retta di vista (new_rv). Si determinano
+   i due punti p1 e p2 sulla retta (deviata) di proiezione e sulla retta
+   (deviata) di vista che sono i più vicini delle due rette. Il punto di
+   intersezione rumoroso che cerchiamo è il punto medio del segmento
+   che congiunge p1 e p2. Se accade che la distanza (al quadrato) di tale
+   punto rumoroso dal punto ideale superi MAX_ALLONTANAMENTO_PER_RUMORE,
+   il punto è dichiarato invalido, la misura indefinita.
+Output su parametri:
+   struct punto *pr : punto comprensivo di rumore
+Relazione con altre funzioni:
+   usa:
+Versore_da_retta(), Crea_retta(), Vett_tra_punti()
+Prod_scal(), Vett_per_scal(), Punto_da_retta()
+
+*/

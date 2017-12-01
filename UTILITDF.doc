@@ -1,0 +1,167 @@
+/*
+Nome file: UTILIT.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ago 25'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+UTILIT: Funzioni di utilità per i menu, per gli errori ecc.
+   DOMENU: Menù del sistema
+      Menu()
+   ERRORI: Gestione errori
+      Error()
+   VARIEF: Funzioni varie
+      Aspetta_return()
+      Crea_str_da_campo()
+      Crea_campo()
+      Zero_string()
+      Ranf()
+      Lz()
+      Screen_saver()
+   DEBUGF: Funzione per visualizzazioni di debugging
+      Debug()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   DOMENU
+---------------------------------------------------------------------------
+
+Menu()
+°°°°°°
+Input da parametri:
+   char test[60] : intestazione del menù
+   char *opz[20] : testi delle 20 opzioni del menù
+Elaborazioni: se il testo di una opzione è nullo oppure inizia con uno
+   spazio vuoto, all' opzione non è assegnato un numero anche se viene
+   visualizzato il testo, perché si ritiene che si tratti di una riga di
+   continuazione dell' opzione precedente. Vengono assegnati dei numeri
+   solo alle opzioni reali anche se poi viene restituito il numero della
+   riga di opz[20] relativa all'opzione scelta. I numeri assegnati da questa
+   funzione alle opzioni sono sempre consecutivi, mentre quelli trattati nel
+   chiamante avranno dei buchi in corrispondenza di opzioni vuote o di
+   righe di continuazione. Sono questi ultimi che vengono restituiti.
+Output su valore di ritorno: int
+   numero dell' opzione scelta
+
+---------------------------------------------------------------------------
+   ERRORI
+---------------------------------------------------------------------------
+
+Error()
+°°°°°°°
+Input da parametri:
+   char *errmsg : messaggio di errore da visualizzare
+      (deve essere una stringa)
+   char *nomerout : nome della funzione in cui è accaduto l' errore
+      (deve essere una stringa)
+   char *nomefile : nome del modulo cui appartiene la funzione
+      (deve essere una stringa)
+Elaborazioni: si visualizza una scritta errore lampeggiante in un angolo
+   dello schermo e si attende la pressione di un tasto. Ciò per consentire
+   di vedere le scritte presenti in quel momento sullo schermo. Poi si
+   visualizzano le stringhe date, si chiudono i files, si chiude la
+   Clipboard e si esce dopo che si sia digitato un Return
+
+---------------------------------------------------------------------------
+   VARIEF
+---------------------------------------------------------------------------
+
+Aspetta_return()
+°°°°°°°°°°°°°°°°
+Elaborazioni: attende che si digiti un return dalla tastiera
+
+Crea_str_da_campo()
+°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   char *campo : campo da convertire in stringa
+   int lungh : lunghezza del campo
+Elaborazioni: si copia il campo nella stringa aggiungendo un NULL alla fine
+   della stringa
+Output su parametri:
+   char *str : stringa risultante
+
+Crea_campo()
+°°°°°°°°°°°°
+Input da parametri:
+   char *stringa : stringa da convertire in campo
+   int lungh : lunghezza del campo (non è quindi considerato il NULL finale)
+Elaborazioni: si copia la stringa nel campo trascurando il NULL e se la
+   stringa è più corta della lunghezza del campo, esso viene completato con
+   spazi vuoti
+Output su parametri:
+   char *campo : campo risultante
+
+Zero_string()
+°°°°°°°°°°°°°
+Input da parametri:
+   int num : numero tra 1 e 999 compresi
+Elaborazioni: il numero viene utilizzato per costruire un campo di tre
+   caratteri (senza NULL, non è una stringa) contenente il numero con a
+   sinistra gli zeri necessari per avere comunque tre caratteri. Per es.
+   14 diventa "014", 5 diventa "005", 234 diventa "234".
+Output su parametri:
+   char res[3] : campo risultante
+
+Ranf()
+°°°°°°
+Input da parametri:
+   float da, float a : estremi del campo di variabilità del numero casuale
+Elaborazioni: genera un numero casuale nell' intervallo [da,a]
+Output su valore di ritorno: float
+   numero casuale generato
+
+Lz()
+°°°°
+Input da parametri:
+   double l : numero da testare
+Elaborazioni: restituisce TRUE se l è minore, in valore assoluto, di 1E-6
+Output su valore di ritorno: BOOL
+   TRUE se |l| < 1E-6
+
+Screen_saver()
+°°°°°°°°°°°°°°
+Input da parametri:
+   float lavoro : numero tra 0 e 1 indicante la parte già completata del
+      lavoro
+Elaborazioni: visualizza caratteri a caso per evitare danni allo schermo
+   durante lavori lunghi. Visualizza anche la percentuale di lavoro
+   completata.
+
+---------------------------------------------------------------------------
+   DEBUGF
+---------------------------------------------------------------------------
+
+Debug()
+°°°°°°°
+Input da parametri:
+   int line : numero di linea del sorgente C
+   char file[40] : nome del modulo C cui line si riferisce
+Elaborazioni: questa funzione serve per il debugging. Essa visualizza il
+   numero di linea del sorgente C e il modulo cui tale linea si riferisce,
+   se viene chiamata nel seguente modo: Debug(__LINE__,__FILE__).
+   __LINE__ è una macro che viene sostituita in fase di compilazione dal
+   numero di linea in cui è presente la chiamata a Debug(). Analogamente
+   per __FILE__. Nella funzione è presente un trattamento particolare per
+   alcuni moduli, inserito nel corso del debugging del pacchetto. La
+   posizione del cursore viene memorizzata prima di visualizzare, e poi
+   viene ripristinata.
+
+*/

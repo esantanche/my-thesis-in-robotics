@@ -1,0 +1,64 @@
+/*
+Nome file: THMANUAL.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Mar 5'93
+
+###########################################################################
+   STRUTTURA DEL PRESENTE MANUALE
+###########################################################################
+
+   Questo manuale si riferisce al software di riconscimento dei poliedri
+(o meglio dei doppi diedri).
+   Verranno descritte in successione le quattro opzioni del menù.
+   In generale si da per scontata la conoscenza del contenuto della tesi
+(cioe' del testo della tesi di laurea).
+
+###########################################################################
+
+---------------------------------------------------------------------------
+   INIZIALIZZAZIONE POLIEDRO IN USO
+---------------------------------------------------------------------------
+
+   L' opzione n.ro 1 è necessaria per l' impostazione del poliedro in uso.
+Nella funzione C Imposta_poliedro che è quella che viene chiamata quando
+si sceglie l' opzione n.ro 1, ci sono tutti i dati che definiscono i due
+poliedri che attualmente sono solo due doppi diedri ovvero due poliedri
+composti da tre sole facce. La struttura dati usata per rappresentare tali
+poliedri è però generale e permette l' inserimento di qualsiasi poliedro.
+Scegliendo il poliedro n.ro 1, una variabile globale di nome POLI viene
+impostata ad 1, scegliendo il poliedro n.ro 2, viene impostata a 2. Due
+variabili globali vengono impostate con tutti i dati identificativi dei
+due poliedri. Con l' opzione 1 si inizializzano quindi i due poliedri e si
+decide quale dei due sia quello in uso, informazione questa necessaria per
+la creazione delle immagini e per gli esperimenti. Quindi eseguire l' opzione
+1 prima di fare qualsiasi altra cosa è indispensabile per il corretto
+funzionamento del programma.
+
+---------------------------------------------------------------------------
+   CREAZIONE E VISUALIZZAZIONE DI IMMAGINI
+---------------------------------------------------------------------------
+
+   L' opzione n.ro 2 permette di creare immagini di poliedri esattamente
+come si è fatto per i modelli rotondi. Si rimanda al manuale relativo al
+software di rilevazione delle discontinuità sui modelli rotondi per i
+chiarimenti. Precisamente si veda l' opzione n.ro 11 di suddetto manuale.
+Il poliedro di cui calcolare l' immagine non è sceglibile. Esso è già
+stato scelto nell' eseguire l' opzione 1.
+   L' opzione n.ro 3 permette la visualizzazione delle immagini come già
+per i modelli rotondi.
+
+---------------------------------------------------------------------------
+   LANCIO DI ESPERIMENTI DI RICONOSCIMENTO
+---------------------------------------------------------------------------
+
+   L' opzione n.ro 4 permette il lancio di esperimenti di riconoscimento.
+Viene richiesto il numero di iterazioni da compiere e sulle quali valutare
+le statistiche. 500 iterazioni richiedono circa una notte. Il poliedro
+su cui effettuare le misure è stato scelto con l' opzione 1. Si chiede
+anche se si vuole che le iterazioni procedano in modo automatico o se
+invece va battuto un tasto ad ogni iterazione per poter vedere i messaggi
+che il programma fornisce nel corso dell' esecuzione. Si chiede anche il
+nome del file il cui pathname è composto con la macro PATH_REPORT_ERICPO.
+
+*/

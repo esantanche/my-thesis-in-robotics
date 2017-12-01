@@ -1,0 +1,486 @@
+/*
+Nome file: GEOMETDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Set 4'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+GEOMET: Funzioni geometriche (intersezioni elementari ecc.)
+   INTRET: Intersezione retta-piano, retta-cono, retta-cilindro
+      Interseca_cono_retta()
+      Calcola_normale_cono()
+      Interseca_cilindro_retta()
+      Calcola_normale_cilindro()
+      Interseca_piano_retta()
+   VISIBI: Funzioni che determinano la visibilità del punto
+           di intersezione tra la retta di proiezione e l' oggetto, da
+           parte del punto di vista (PSD)
+      Visibilita_cono_retta()
+      Visibilita_cilindro_retta()
+      Visibilita_piano_retta()
+   INTSEG: Intersezione tra segmenti piani (per la creazione casuale di
+           modelli rotondi)
+      Interseca_segmenti()
+      Distanza_segmenti()
+   INTPIA: Intersezione di piano con cerchio
+      Interseca_piano_cerchio()
+   CRERET: Creazione di oggetti "retta"
+      Crea_retta()
+      Punto_da_retta()
+   PIANO3: Piano per tre punti (per il piano di taglio)
+      Piano_per_tre_punti()
+   VETTOR: Funzioni vettoriali
+      Versore_da_retta()
+      Coseno_tra_versori()
+      Vett_tra_punti()
+      Prod_scal()
+      Prod_vett()
+      Vett_per_scal()
+      Sott_vett()
+      Somma_vett()
+      Punto_piu_vett()
+      Modulo()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+
+---------------------------------------------------------------------------
+   INTRET
+---------------------------------------------------------------------------
+
+Interseca_cono_retta()
+°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float x0 : questi sono gli estremi sul piano x-z del segmento della
+   float z0 : spezzata che definisce il modello rotondo. Il segmento è
+   float x1 : obliquo ovvero sono esclusi casi in cui x0=x1 (cilindro) o
+   float z1 : z0=z1 (piano). Si tratta quindi di un cono (è cioè un cono
+      la superficie del modello generata dalla rotazione attorno all' asse z
+      di tale segmento)
+   struct retta r : retta di proiezione laser
+Elaborazioni: si calcola l' intersezione del cono con la retta godendo della
+   facilitazione dovuta all'avere un cono che ha l' asse coincidente con
+   l'asse z. Si calcolano le intersezioni della retta col cono ipotizzato
+   illimitato, per poi eliminare le intersezioni di ordinata non compresa
+   tra z0 e z1 in quanto la superficie del modello non è un cono illimitato,
+   bensì solo un pezzo di cono. Inoltre occorre considerare l' intersezione
+   più vicina al punto di proiezione laser. Vanno considerati tutti i casi
+   particolari come il caso in cui la retta di proiezione è parallela ad
+   una direttrice del cono o il caso in cui la retta di proiezione coincide
+   con una direttrice del cono ovvero passa per il vertice del cono. In
+   questo ultimo caso le intersezioni della retta con il cono sono infinite
+   e si sceglie un punto medio. Ancora come caso particolare va trattato
+   quello in cui la retta di proiezione fosse parallela al piano x-y. Viene
+   chiamata Calcola_normale_cono() per calcolare la normale al cono nel
+   punto di intersezione
+Output su parametri:
+   struct punto *p : punto di intersezione della retta di proiezione con il
+      cono
+   struct vettore *n : normale alla superficie del cono nel punto di
+      intersezione trovato
+   float *distanza : distanza del punto di intersezione dal punto di
+      proiezione laser
+   float *param_retta : parametro della retta di priezione corrispondente
+      al punto di intersezione
+Relazione con altre funzioni:
+   è_composta_da:
+Calcola_normale_cono() che calcola la normale al cono nel punto di
+   intersezione
+
+Calcola_normale_cono()
+°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float x0 : questi sono gli estremi sul piano x-z del segmento della
+   float z0 : spezzata che definisce il modello rotondo. Il segmento è
+   float x1 : obliquo ovvero sono esclusi casi in cui x0=x1 (cilindro) o
+   float z1 : z0=z1 (piano). Si tratta quindi di un cono (è cioè un cono
+      la superficie del modello generata dalla rotazione attorno all' asse z
+      di tale segmento)
+   struct punto *p : punto di intersezione tra la retta di proiezione e il
+      cono
+Elaborazioni: si calcola la normale (di norma unitaria) alla superficie del
+   cono nel punto p che si trova su di essa. Occorre ora dire come è
+   orientata la normale ovvero se è uscente o entrante nella superficie.
+   Pensiamo alla spezzata sul piano x-z che definisce il modello. Un cono
+   in tale spezzata è un segmento obliquo e la normale in questione possiamo
+   rappresentarla con un segmento perpendicolare a quello che rappresenta il
+   cono (questo ha estremi x0,z0 e x1,z1) orientato verso l'alto o verso il
+   basso. Noi orienteremo la normale in modo da essere alla sinistra di un
+   osservatore che percorra il segmento rappresentativo del cono, dall'
+   estremo x0,z0 all' estremo x1,z1.
+Output su parametri:
+   struct vettore *n : normale al cono nel punto p
+
+Interseca_cilindro_retta()
+°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float xc : questi sono gli estremi sul piano x-z del segmento della
+   float z0 : spezzata che definisce il modello rotondo. x0 e x1 sono uguali
+   float z1 : e pari a xc perchè si tratta di un cilindro
+   struct retta r : retta di proiezione laser
+Elaborazioni: si calcola l' intersezione del cilindro con la retta godendo
+   della facilitazione dovuta all'avere un cilindro che ha l' asse
+   coincidente con l'asse z. Si calcolano le intersezioni della retta col
+   cilindro ipotizzato illimitato, per poi eliminare le intersezioni di
+   ordinata non compresa tra z0 e z1 in quanto la superficie del modello
+   non è un cilindro illimitato, bensì solo un pezzo di cilindro. Va
+   considerato il caso particolare in cui la retta di proiezione è verticale
+   ovvero parallela all' asse del cilindro. In tal caso non c'è intersezione
+   col cilindro salvo nel caso in cui la retta di proiezione sia giacente
+   sulla superficie del cilindro. In questo ultimo caso le intersezioni
+   sono infinite e si sceglie un punto medio. Viene chiamata
+   Calcola_normale_cilindro() per calcolare la normale al cilindro nel punto
+   di intersezione
+Output su parametri:
+   struct punto *p : punto di intersezione della retta di proiezione con il
+      cono
+   struct vettore *n : normale alla superficie del cono nel punto di
+      intersezione trovato
+   float *distanza : distanza del punto di intersezione dal punto di
+      proiezione laser
+   float *param_retta : parametro della retta di priezione corrispondente
+      al punto di intersezione
+Relazione con altre funzioni:
+   è_composta_da:
+Calcola_normale_cilindro() che calcola la normale al cilindro nel punto
+   di intersezione
+
+Calcola_normale_cilindro()
+°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float xc : questi sono gli estremi sul piano x-z del segmento della
+   float z0 : spezzata che definisce il modello rotondo. x0 e x1 sono uguali
+   float z1 : e pari a xc perchè si tratta di un cilindro
+   struct punto *p : punto di intersezione tra la retta di proiezione e il
+      cilindro
+Elaborazioni: si calcola la normale (di norma unitaria) alla superficie del
+   cilindro nel punto p che si trova su di essa. Occorre ora dire come è
+   orientata la normale ovvero se è uscente o entrante nella superficie.
+   Pensiamo alla spezzata sul piano x-z che definisce il modello. Un
+   cilindro in tale spezzata è un segmento verticale e la normale in
+   questione possiamo rappresentarla con un segmento perpendicolare a quello
+   che rappresenta il cilindro (questo ha estremi xc,z0 e xc,z1), quindi un
+   segmento orizzontale, orientato verso sinistra o verso destra. Noi
+   orienteremo la normale in modo da essere alla sinistra di un
+   osservatore che percorra il segmento rappresentativo del cilindro, dall'
+   estremo xc,z0 all' estremo xc,z1.
+Output su parametri:
+   struct vettore *n : normale al cilindro nel punto p
+
+Interseca_piano_retta()
+°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float x0 : questi sono gli estremi sul piano x-z del segmento della
+   float x1 : spezzata che definisce il modello rotondo. Il segmento è
+   float zr : orizzontale ovvero è z0=z1=zr perché si tratta di un piano
+   struct retta r : retta di proiezione laser
+Elaborazioni: si calcola l' intersezione del piano con la retta godendo
+   della facilitazione dovuta all'avere un piano, che poi è una corona
+   circolare, che ha l' asse coincidente con l'asse z e giace su di un piano
+   parallelo al piano x-y. Si calcolano le intersezioni della retta col
+   piano di equazione z=zr, per poi eliminare le intersezioni distanti dall'
+   asse z più di x1 o meno di x0 (se x0 < x1, il rovescio altrimenti). Va
+   considerato il caso particolare in cui la retta di proiezione è
+   orizzontale nel qual caso si dichiara assente l' intersezione. Si calcola
+   anche la normale che semplicemente è un versore parallelo all' asse z
+   però orientato verso l' alto se x1>x0, verso il basso se x1<x0.
+Output su parametri:
+   struct punto *p : punto di intersezione della retta di proiezione con il
+      piano
+   struct vettore *n : normale alla superficie del piano nel punto di
+      intersezione trovato
+   float *distanza : distanza del punto di intersezione dal punto di
+      proiezione laser
+   float *param_retta : parametro della retta di priezione corrispondente
+      al punto di intersezione
+
+---------------------------------------------------------------------------
+   VISIBI
+---------------------------------------------------------------------------
+
+Visibilita_cono_retta()
+°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float x0 : questi sono gli estremi sul piano x-z del segmento della
+   float z0 : spezzata che definisce il modello rotondo. Il segmento è
+   float x1 : obliquo ovvero sono esclusi casi in cui x0=x1 (cilindro) o
+   float z1 : z0=z1 (piano). Si tratta quindi di un cono (è cioè un cono
+      la superficie del modello generata dalla rotazione attorno all' asse z
+      di tale segmento)
+   struct retta r : retta di vista che congiunge il punto di vista con il
+      punto di intersezione della retta di proiezione laser con l' oggetto
+   BOOL stesso : TRUE se quello che stiamo esaminando è l' elemento (qui
+      conico) sul quale si è trovata l' intersezione della retta di
+      proiezione con il modello
+Elaborazioni: si calcola l' intersezione del cono con la retta di vista con
+   le stesse considerazioni fatte per Interseca_cono_retta(). Siccome il
+   punto di intersezione della retta di proiezione con l'oggetto corrisponde
+   al punto di parametro unitario della retta di vista, per come questa
+   viene creata, se l' intersezione della retta di vista con l'elemento in
+   esame ha parametro minore di uno vuol dire che l' elemento produce
+   occlusione nei confronti del punto di inters. . Va tenuta presente la
+   possibilità che un elemento occluda una intersezione trovata sull'
+   elemento stesso. In tal caso occorre fare attenzione perché cercando
+   l' intersezione della retta di vista con l' elemento, si trova il punto
+   di intersezione con la retta di proiezione che potrebbe erroneamente
+   essere preso come occludente avendo un parametro unitario sulla retta di
+   vista. Basta fare attenzione con le soglie ed usare il parametro stesso.
+Output su valore di ritorno: BOOL
+   TRUE se il punto di intersezione non è visibile dal PSD
+
+Visibilita_cilindro_retta()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float xc : questi sono gli estremi sul piano x-z del segmento della
+   float z0 : spezzata che definisce il modello rotondo. x0 e x1 sono uguali
+   float z1 : e pari a xc perchè si tratta di un cilindro
+   struct retta r : retta di vista che congiunge il punto di vista con il
+      punto di intersezione della retta di proiezione laser con l' oggetto
+   BOOL stesso : TRUE se quello che stiamo esaminando è l' elemento (qui
+      cilindrico) sul quale si è trovata l' intersezione della retta di
+      proiezione con il modello
+Elaborazioni: come Visibilita_cono_retta() ma per i cilindri
+Output su valore di ritorno: BOOL
+   TRUE se il punto di intersezione non è visibile dal PSD
+
+Visibilita_piano_retta()
+°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float x0 : questi sono gli estremi sul piano x-z del segmento della
+   float x1 : spezzata che definisce il modello rotondo. Il segmento è
+   float zr : orizzontale ovvero è z0=z1=zr perché si tratta di un piano
+   struct retta r : retta di vista che congiunge il punto di vista con il
+      punto di intersezione della retta di proiezione laser con l' oggetto
+   BOOL stesso : TRUE se quello che stiamo esaminando è l' elemento (qui
+      piano) sul quale si è trovata l' intersezione della retta di
+      proiezione con il modello
+Elaborazioni: come Visibilita_cono_retta() ma per i piani
+Output su valore di ritorno: BOOL
+   TRUE se il punto di intersezione non è visibile dal PSD
+
+---------------------------------------------------------------------------
+   INTSEG
+---------------------------------------------------------------------------
+
+Interseca_segmenti()
+°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float x1, float z1 : primo   estremo del primo   segmento
+   float x2, float z2 : secondo estremo del primo   segmento
+   float x3, float z3 : primo   estremo del secondo segmento
+   float x4, float z4 : secondo estremo del secondo segmento
+Elaborazioni: si ritorna TRUE se i due segmenti si intersecano e si
+   calcola ciò verificando che l'intersezione tra le rette dei segmenti
+   cada dentro i due segmenti. Se i segmenti sono paralleli, non c'è
+   intersezione trascurando il caso in cui essi appartengano alla stessa
+   retta.
+Output su valore di ritorno: BOOL
+   TRUE se c'è intersezione tra i segmenti
+
+Distanza_segmenti()
+°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   float x1, float z1 : primo   estremo del primo   segmento
+   float x2, float z2 : secondo estremo del primo   segmento
+   float x3, float z3 : primo   estremo del secondo segmento
+   float x4, float z4 : secondo estremo del secondo segmento
+Elaborazioni: si pongono dei vincoli sulle distanze tra gli estremi
+   dei due segmenti, vincoli scritti utilizzando le lunghezze dei due
+   segmenti. I vincoli non sono stati messi tutti in congiunzione perché
+   sarebbero stati troppo restrittivi. Si ricorda che questa funzione
+   serve a vincolare la creazione casuale di modelli rotondi.
+Output su valore di ritorno: BOOL
+   TRUE se i vincoli non sono rispettati
+
+---------------------------------------------------------------------------
+   INTPIA
+---------------------------------------------------------------------------
+
+Interseca_piano_cerchio()
+°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct piano piano : piano da intersecare con il cerchio
+   float z_cerchio : quota del piano (parallelo al piano x-y) contenente
+      il cerchio
+   float raggio : raggio del cerchio sapendo che il centro del cerchio è
+      sull' asse z
+Elaborazioni: il cerchio in questione è uno spigolo di un modello rotondo.
+   Si cercano le intersezioni tra il piano (che sarà un piano di taglio)
+   e il cerchio. Se il piano è parallelo al piano x-y, non ci sono
+   intersezioni. Si esamina il caso particolare in cui il piano sia
+   perpendicolare al piano x-y. Si esamina poi il caso generale. In ogni
+   caso si possono avere nessuna o una o due intersezioni. Una intersezione
+   corrisponde ad un caso di tangenza tra il piano e il cerchio. Se si ha
+   una sola intersezione, p1 conterrà tale intersezione mentre il flag
+   'indefinito' di p2 sarà acceso. Se non c'è neppure una intersezione,
+   saranno accesi entrambi i flag 'indefinito'.
+Output su parametri:
+   struct punto *p1, struct punto *p2 : punti di intersezione
+
+---------------------------------------------------------------------------
+   CRERET
+---------------------------------------------------------------------------
+
+Crea_retta()
+°°°°°°°°°°°°
+Input da parametri:
+   float xp, float yp, float zp : punto di partenza della retta
+   float xa, float ya, float za : punto di arrivo della retta
+Elaborazioni: definisce i campi della struttura retta in base ai dati.
+   il campo cd è la distanza tra il punto di partenza e quello di arrivo
+   per cui è tale che, moltiplicando il parametro della retta per cd, si
+   ottiene l' ascissa curvilinea sulla retta ovvero la distanza con segno
+   del punto corrispondente al parametro, dal punto di partenza essendo
+   positive le distanze corrispondenti a punti che con il punto di partenza
+   formano segmenti equiversi al segmento formato dal punto di arrivo e dal
+   punto di partenza. Si veda la struttura retta
+Output su valore di ritorno: struct retta
+   retta creata
+
+Punto_da_retta()
+°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct retta r : retta cui appartiene il punto
+   float t : parametro del punto richiesto
+Elaborazioni: utilizzando le equaz. della retta, si ricavano le coordinate
+   del punto corrispondente al parametro dato
+Output su valore di ritorno: struct punto
+   punto richiesto
+
+---------------------------------------------------------------------------
+   PIANO3
+---------------------------------------------------------------------------
+
+Piano_per_tre_punti()
+°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct punto p1 |  punti per i quali passa il piano di cui cerchiamo
+   struct punto p2  > l' equazione (i parametri dell' equaz.)
+   struct punto p3 |
+Elaborazioni: scritti i vettori che congiungono p1 a p2 e p1 a p3, il
+   prodotto vettoriale di essi fornisce la normale al piano salvo
+   normalizzazione. Il piano ha equazione: ax+by+cz+d=0 e a,b,c sono
+   direttamente forniti dalle tre componenti della normale. d è calcolato
+   imponendo il passaggio per p1.
+Output su valore di ritorno: struct piano
+   piano passante per p1,p2,p3
+Relazione con altre funzioni:
+   usa:
+Vett_tra_punti(), Prod_vett(), Modulo()
+
+---------------------------------------------------------------------------
+   VETTOR
+---------------------------------------------------------------------------
+
+Versore_da_retta()
+°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct retta r : retta di cui ricavare il versore
+Elaborazioni: calcolo del versore della retta orientato dal punto iniziale
+   della retta, al punto finale
+Output su valore di ritorno: struct vettore
+   versore (vettore unitario) della retta
+
+Coseno_tra_versori()
+°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct vettore v1 : vettori, che devono essere unitari, di cui trovare
+   struct vettore v2 : il coseno dell' angolo compreso
+Elaborazioni: calcolo del coseno dell' angolo compreso tra v1 e v2
+Output su valore di ritorno: float
+   coseno dell' angolo compreso tra v1 e v2
+
+Vett_tra_punti()
+°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct punto p1 : punti che definiscono il vettore
+   struct punto p2 :
+Elaborazioni: si calcola il vettore congiungente i punti p1 e p2,
+   orientandolo da p2 verso p1. Non è un versore, il suo modulo è la
+   lunghezza del segmento p1-p2.
+Output su valore di ritorno: struct vettore
+   vettore da p2 verso p1
+
+Prod_scal()
+°°°°°°°°°°°
+Input da parametri:
+   struct vettore v1 : vettori di cui eseguire il prodotto scalare
+   struct vettore v2 :
+Elaborazioni: esegue il prodotto scalare dei due vettori
+Output su valore di ritorno: float
+   prodotto scalare di v1 e v2
+
+Prod_vett()
+°°°°°°°°°°°
+Input da parametri:
+   struct vettore v1 : vettori di cui eseguire il prodotto vettoriale
+   struct vettore v2 :
+Elaborazioni: si calcola il prodotto vettoriale di v1 e v2 in questo
+   ordine
+Output su valore di ritorno: struct vettore
+   vettore risultato del prodotto vettoriale di v1 e v2
+
+Vett_per_scal()
+°°°°°°°°°°°°°°°
+Input da parametri:
+   float s : scalare da moltiplicare per il vettore dato
+   struct vettore v : vettore dato
+Elaborazioni: si moltiplica lo scalare per il vettore
+Output su valore di ritorno: struct vettore
+   vettore risultato
+
+Sott_vett()
+°°°°°°°°°°°
+Input da parametri:
+   struct vettore v1 : vettori dati
+   struct vettore v2 :
+Elaborazioni: si sottrae v2 a v1
+Output su valore di ritorno: struct vettore
+   risultato
+
+Somma_vett()
+°°°°°°°°°°°°
+Input da parametri:
+   struct vettore v1 : vettori addendi
+   struct vettore v2 :
+Elaborazioni: si sommano i due vettori
+Output su valore di ritorno: struct vettore
+   risultato
+
+Punto_piu_vett()
+°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct punto p : punto di partenza
+   struct vettore v : vettore da aggiungere
+Elaborazioni: si restituisce il punto che si ottiene spostandocisi dal
+   punto di partenza di uno spostamento definito dal vettore. In pratica
+   si sommano le componenti del vettore alle coordinate del punto
+Output su valore di ritorno: struct punto
+   risultato
+
+Modulo()
+°°°°°°°°
+Input da parametri:
+   struct vettore v : vettore di cui calcolare il modulo
+Elaborazioni: calcola il modulo del vettore
+Output su valore di ritorno: float
+   modulo del vettore dato
+
+*/

@@ -1,0 +1,137 @@
+/*
+Nome file: RISDISDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 10'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+RICDIS: Ricerca delle discontinuità in una taglio
+   PARTAG: Partizione di un taglio in segmenti di dati significativi e
+           in segmenti di punti indefiniti
+      Partiziona_taglio()
+   TAPBUC: Riempimento dei singoli punti indefiniti (o coppie) che compaiono
+           in sequenze di punti definiti
+      Tappa_buchi_dist()
+   VALRUM: Valutazione del rumore
+      Valuta_rumore()
+   TRODIS: Ricerca grossolana delle discontinuità
+      Trova_discontinuita()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+  è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   PARTAG
+---------------------------------------------------------------------------
+
+Partiziona_taglio()
+°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : taglio da partizionare
+Elaborazioni: il taglio viene partizionato in sequenze di punti definiti
+   e sequenze di punti indefiniti. Le sequenze di punti definiti inglobano
+   i punti indefiniti isolati (o le coppie) e analogamente per le seq. di
+   punti indefiniti
+Output su parametri:
+   struct elenco_part *e : elenco delle partizioni trovate
+
+---------------------------------------------------------------------------
+   TAPBUC
+---------------------------------------------------------------------------
+
+Tappa_buchi_dist()
+°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : taglio per il quale sono state trovate
+      le partizioni contenenti eventuali punti isolati non definiti (in
+      seq. definite)
+   struct elenco_part *e : elenco delle partizioni trovate
+Elaborazioni: si individuano i punti isolati o le coppie di punti indefiniti
+   in sequenze di punti definiti e si pone in essi un valore di distanza
+   ottenuto per interpolazione lineare dei valori di distanza dei punti
+   adiacenti
+Output su parametri:
+   struct taglio_rett_int huge *t : taglio in cui sono stati attappati i
+      buchi
+
+---------------------------------------------------------------------------
+   VALRUM
+---------------------------------------------------------------------------
+
+Valuta_rumore()
+°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : taglio su cui stimare il rumore
+   struct elenco_part *e : elenco partizioni individuate sul taglio
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Elaborazioni: Vengono eseguiti fitting usando il primo filtro di fitting
+   e spostandocisi ogni volta di un punto. Si ottengono tante stime del
+   rumore quanti sono i punti del taglio (a parte comportamenti di bordo).
+   Poi si eseguono i due controlli che invalidano le stime se i fitting
+   sono incappati in discontinuità. In tali punti invalidati si inserisce
+   una interpolazione lineare delle stime adiacenti. Si fa poi la media
+   delle stime di 4 punti adiacenti per diminuire la variabilità delle
+   stime. Infine si utilizza l' informazione a priori: se la stima è
+   minore di SOGLIA_MIN_RUMORE, essa viene forzata a RUMORE_DI_DEFAULT.
+Output su parametri:
+   double huge *rumore : array delle stime prodotte del rumore
+Relazione con altre funzioni:
+   usa:
+Esegui_fitting() che esegue i fitting
+vector(), ivector(), free_vector(), free_ivector()
+
+---------------------------------------------------------------------------
+   TRODIS
+---------------------------------------------------------------------------
+
+Trova_discontinuita()
+°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : taglio grossolano su cui rilevare le
+      disc.
+   struct elenco_part *e : elenco partizioni del taglio
+   double huge *rumore : stima del rumore sul taglio
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Elaborazioni: si esaminano chiaramente le partizioni di punti definiti
+   del taglio. Si eseguono poi fitting di n.ro d'ordine progressivamente
+   maggiore spostandocisi ogni volta di un numero di punti pari a metà
+   del supporto del fitting. Se un fitting viene accettato ovvero
+   il supporto a cui è applicato risulta privo di disc., vengono cancellate
+   le disc. trovate nella parte centrale del supporto. Ovvero non vengono
+   cancellate tutte le disc. del supporto, bensì solo quelle di un
+   intervallo di ampiezza pari a metà del supporto e posizionato
+   centralmente rispetto al supporto. Inoltre non vengono cancellate
+   tutte le disc., bensì solo quelle trovate da filtri di numero d'ordine
+   compreso tra n-1 e n-SOGLIA_CANC_DISC (estremi inclusi) se n è il numero
+   d'ordine del filtro in esame. Se il fitting rileva invece una disc.,
+   si scrive l' ordine del filtro in due punti contigui posti al centro
+   del supporto del fitting (essendo il supporto sempre di lunghezza pari,
+   non c'è un punto centrale del supporto). Ciò non viene però fatto se sul
+   supporto sono già presenti altre rilevazioni di disc. .
+Output su parametri:
+   int huge *discontinuita : array lungo come il taglio in cui ci sono
+      numeri diversi da zero in corrispondenza delle disc. rilevate
+Relazione con altre funzioni:
+   usa:
+Esegui_fitting() che esegue i fitting
+vector(), free_vector()
+
+*/

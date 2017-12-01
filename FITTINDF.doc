@@ -1,0 +1,138 @@
+/*
+Nome file: FITTINDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 11'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+FITTIN: Fitting di polinomi alle distanze
+   INIZIA: Inizializzazione dei filtri di fitting
+      Inizializza_filtri()
+      Dealloca_filtri()
+   ESTRAI: Funzioni ausiliarie per il fitting
+      Estrai_segmento()
+   DOFITT: Esecuzione del fitting
+      Esegui_fitting()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   INIZIA
+---------------------------------------------------------------------------
+
+Inizializza_filtri()
+°°°°°°°°°°°°°°°°°°°°
+Elaborazioni: inizializza i filtri di fitting impostando i parametri che li
+   identificano e calcolando le matrici dei filtri. Per le formule si può
+   vedere il file Mathcad n.ro 5 riportato nella tesi. Ci sono tutti i dati
+   della struttura str_descr_filtri.
+Output su variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Relazione con altre funzioni:
+   usa:
+Trasposta(), Prod_matr(), Inversa()
+matrix(), free_matrix()
+
+Dealloca_filtri()
+°°°°°°°°°°°°°°°°°
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Elaborazioni: dealloca la memoria riservata per le matrici dei filtri di
+   fitting, da Inizializza_filtri().
+Output su variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Relazione con altre funzioni:
+   usa:
+free_matrix()
+
+---------------------------------------------------------------------------
+   ESTRAI
+---------------------------------------------------------------------------
+
+Estrai_segmento()
+°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : taglio dal quale occorre estrarre un
+      segmento di dati
+   BOOL rum_indef : TRUE se i dati di rumore non sono definiti per cui
+      non va estratto il segmento dei dati di rumore associato al segmento
+      richiesto dei dati del taglio
+   double huge *rumore : vettore delle stime del rumore
+   int punto_inizio : punto di inizio del segmento da estrarre
+   int lungh : lunghezza del segmento da estrarre
+   BOOL avanti : TRUE se il segmento parte da punto_inizio e va in avanti
+Elaborazioni: i valori delle distanze rilevate dal taglio in un intervallo
+   che parte da punto_inizio e va in avanti o all' indietro per una
+   lunghezza lungh, vengono riportati comunque in avanti nel vettore
+   seg_distanze. Lo stesso si fa per le stime del rumore se rum_indef ==
+   FALSE
+Output su parametri:
+   double huge *seg_distanze : segmento estratto del taglio
+   double huge *seg_rumore : segmento estratto delle stime del rumore (se
+      rum_indef == FALSE)
+
+---------------------------------------------------------------------------
+   DOFITT
+---------------------------------------------------------------------------
+
+Esegui_fitting()
+°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : taglio su cui eseguire il fitting
+   BOOL rum_indef : TRUE se il vettore delle stime dei rumori è indefinito
+   double huge *rumore : vettore delle stime del rumore
+   int punto_inizio : punto di inizio del supporto del fitting
+   int num_filtro : numero d'ordine del filtro di fitting da usare
+   BOOL avanti : TRUE se il supporto parte da punto_inizio e va in avanti
+      ovvero si tratta di un fitting destro
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Elaborazioni: si estrae il segmento di dati relativo al supporto del fitting
+   da eseguire facendo uso della funzione Estrai_segmento() in modo da
+   avere i dati sempre ordinati in avanti in modo da applicare il filtro
+   di fitting sempre allo stesso modo sia nel caso di fitting destri, sia
+   nel caso di fitting sinistri. Tale segmento di dati inteso come vettore
+   colonna va moltiplicato per la matrice di fitting per ottenere i coeffi-
+   cienti del polinomio di fitting. Si valuta poi la radice quadrata della
+   somma dei quadrati dei residui di fitting divisa per s-(n+1) dove s è il
+   supporto del fitting e n è l' ordine di fitting (lineare, quadr.,
+   cubico). Si tratta quindi di una stima corretta della dev. std. dei
+   residui di fitting. Si calcola poi la verosimiglianza e la si confronta
+   con la soglia per decidere della validità del fitting. Questo solo se
+   sono valide le stime del rumore ovvero se rum_indef == FALSE.
+Output su parametri:
+   double huge *coeff : coefficienti del polinomio di fitting ottenuto
+   double *sqme : stima corretta della dev.std. dei residui di fitting
+   double *prob : verosimiglianza del fitting secondo la formulazione
+      uniforme, sempre che le stime del rumore siano definite ovvero che
+      sia rum_indef == FALSE
+   BOOL *accettato : se la verosimiglianza prob è sufficiente cioè supera
+      la soglia data dal campo soglia della struttura descr_filtri relativa
+      al filtro num_filtro, il fitting è dichiarato valido cioè si pone
+      accettato = TRUE
+Relazione con altre funzioni:
+   è_composta_da:
+Estrai_segmento() che estrae dal taglio il segmento di dati su cui eseguire
+   il fitting
+   usa:
+Prod_matr(), Valuta_polinomio(),
+vector(), free_vector(), matrix(), free_matrix()
+
+*/

@@ -1,0 +1,231 @@
+/*
+Nome file: THMODULI.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ago 24'92
+
+###########################################################################
+   DESCRIZIONE GENERALE DEL SISTEMA
+###########################################################################
+
+   In questa sottodirectory (\BORLANDC\TH2) è contenuto il progetto
+software relativo alla tesi di laurea di Emanuele Maria Santanché e
+riguardante il riconoscimento di due doppi diedri per mezzo della superficie
+di compatibilità e facendo uso di un sistema di acquisizione di dati
+tridimensionali basato sulla triangolazione. Ulteriori informazioni si
+possono trovare nel testo della tesi (§ 12).
+
+###########################################################################
+   DESCRIZIONE DELLA DOCUMENTAZIONE
+###########################################################################
+
+   Il file di progetto del sistema è THSYS2.PRJ e contiene l' elenco
+di tutti i files relativi al progetto, in particolare i files di
+documentazione.
+   La documentazione è gerarchicamente composta da THMODULI.DOC,
+THGRUPPI.DOC e dai files .DOC che hanno il nome del rispettivo file C
+(files *.CPP).
+   La struttura della documentazione è dovuta al fatto che le funzioni
+C sono state raggruppate in moduli (i files .CPP) e internamente ai moduli
+in gruppi.
+   Il file THMODULI.DOC descrive i moduli, THGRUPPI.DOC descrive i gruppi,
+i files *.DOC relativi agli *.CPP descrivono le funzioni.
+   Il file THMANUAL.DOC contiene il manuale d' uso.
+   Si consiglia il seguente ordine di lettura delle documentazioni:
+THMODULI, THGRUPPI, THSTRUCT, THVARIE, THVARGLO, THPROTOT, ******DF.DOC
+(files di documentazione relativi ai singoli files C), ******.CPP
+(files C, per i commenti).
+
+###########################################################################
+   DESCRIZIONE DEL PACCHETTO SOFTWARE
+###########################################################################
+
+   Viene qui interfacciato il sensore di discontinuità ai modelli poliedrici
+dopo che esso era stato sviluppato e testato sui modelli rotondi. L'
+interfacciamento ai poliedri è del tutto generale ma qui sono stati
+descritti solo due poliedri formati ognuno da tre facce ovvero due doppi
+diedri. Tali doppi diedri non si trovano in un file, ma sono codificati nel
+sorgente. La funzione di inizializzazione del poliedro in uso permette la
+scelta di uno dei due poliedri come quello in uso e realizza il caricamento
+in memoria, in una variabile globale, dei dati dei due poliedri. Si
+permette la creazione di immagini di distanza e si eseguono esperimenti di
+riconoscimento dei poliedri con la superficie di compatibilità in base ai
+dati ottenuti da un taglio scelto casualmente.
+
+###########################################################################
+   DESCRIZIONE DEL SISTEMA USATO
+###########################################################################
+
+   Si è utilizzato il linguaggio Borland C++ per Windows senza avere
+le librerie TVISION, OWL, CLASSLIB, CRTL. Non si è utilizzata la
+programmazione ad oggetti per motivi di spazio. La programmazione segue
+comunque le tecniche dell' information hiding e della modularizzazione.
+
+###########################################################################
+   ELENCO DEI MODULI
+###########################################################################
+
+THMAIN: Modulo contenente il main del sistema
+MODPOL: Gestione modelli poliedrici
+GRABAS: Grafica di base
+GEOMET: Funzioni geometriche (intersezioni elementari ecc.)
+TAGLIO: Ottenimento di dati tridimensionali facendo inseguire al laser
+        percorsi rettilinei.
+IMMAGI: Gestione immagini di distanza
+UTILIT: Funzioni di utilità per i menu, per gli errori ecc.
+NUMREC: Funzioni tratte da Numerical Recipes
+MATEMA: Funzione della superficie di compatibilità e altre funzioni
+        matematiche (valut. polin. ecc.)
+RICDIS: Ricerca delle discontinuità in un taglio
+FITTIN: Fitting di polinomi alle distanze
+LOCDIS: Localizzazione fine delle discontinuità
+ANADIS: Chiamata alla funzione di localizzazione fine per ogni disc.
+        trovata grossolanamente in RICDIS
+ERICPO: Lancio di un esperimento di riconoscimento dei poliedri
+
+###########################################################################
+   DESCRIZIONE DEI MODULI
+###########################################################################
+
+---------------------------------------------------------------------------
+   THMAIN
+---------------------------------------------------------------------------
+
+   Questo modulo contiene il main del sistema che si occupa delle inizializ-
+zazioni, di visualizzare il menù di ingresso, e di visualizzare la
+presentazione.
+
+---------------------------------------------------------------------------
+   MODPOL
+---------------------------------------------------------------------------
+
+   MODPOL sta per MODello POLiedrico. Questo modulo contiene tutte le
+funzioni relative alla simulazione dei modelli poliedrici. C'è l'
+inizializzazione dei dati relativi ai due doppi diedri e la scelta di
+quello in uso. Inoltre c'è la funzione (Triangola_modpol) che produce la
+misura di distanza dato il modello in esame, la retta di proiezione laser e
+il punto di vista.
+
+---------------------------------------------------------------------------
+   GRABAS
+---------------------------------------------------------------------------
+
+   GRABAS sta per GRAfica BASe. Questo modulo contiene tutte le funzioni
+necessarie per la grafica: gestione delle finestre, disegno nelle finestre,
+ecc.
+
+---------------------------------------------------------------------------
+   GEOMET
+---------------------------------------------------------------------------
+
+   GEOMET sta per GEOMETria. Si tratta di funzioni di calcolo geometrico
+come per es. il rilevamento di intersezioni tra segmenti oppure l'interse-
+zione di una retta con un cono o un piano o un cilindro. Ci sono anche
+funzioni di calcolo vettoriale.
+
+---------------------------------------------------------------------------
+   TAGLIO
+---------------------------------------------------------------------------
+
+   Ci sono le funzioni per la creazione interattiva e casuale di tagli
+destinati ad essere salvati su file ed anche quelle che creano tagli
+che vengono invece poi utilizzati internamente dal programma. Ci sono le
+funzioni per la visualizzazione dei tagli memorizzati in file.
+
+---------------------------------------------------------------------------
+   IMMAGI
+---------------------------------------------------------------------------
+
+   Si tratta delle funzioni che creano e visualizzano immagini di distanza
+di poliedri. Ovvero sono le opzioni 2 e 3 del menù (vedi manuale d'uso).
+
+---------------------------------------------------------------------------
+   UTILIT
+---------------------------------------------------------------------------
+
+   Contiene varie funzioni di utilità come per es. quella che realizza i
+menù, quella che gestisce i casi di errore ecc.
+
+---------------------------------------------------------------------------
+   NUMREC
+---------------------------------------------------------------------------
+
+   NUMREC sta per NUMerical RECipes. Si tratta di funzioni matematiche
+riportate dal testo Numerical Recipes in C salvo qualche modifica. Ci sono
+le funzioni per la decomposizione L-U delle matrici che serve per l'
+inversione matriciale fatta poi in MATEMA. Ci sono poi tutte le funzioni
+per la definizione di vettori e matrici.
+
+---------------------------------------------------------------------------
+   MATEMA
+---------------------------------------------------------------------------
+
+   Contiene alcune funzioni matematiche matriciali e relative a polinomi
+che non provenendo direttamente da Numerical Recipes in C, non sono poste
+in NUMREC. C'è la funzione che esprime la superficie di compatibilità (in
+parte) e c'è la funzione che cerca iterativamente gli zeri delle equaz. che
+definiscono la sup. di compatibilità utilizzando il metodo di Newton.
+
+---------------------------------------------------------------------------
+   RICDIS
+---------------------------------------------------------------------------
+
+   RICDIS sta per RICerca DIScontinuità. C'è la funzione relativa alla
+ricerca delle discontinuità nel taglio grossolano. Ci sono anche la funzione
+che partiziona il taglio grossolano in segmenti di punti definiti e di punti
+indefiniti, e quella che valuta il rumore.
+
+---------------------------------------------------------------------------
+   FITTIN
+---------------------------------------------------------------------------
+
+   Ci sono le funzioni necessarie per l' inizializzazione dei filtri di
+fitting e per l' esecuzione del fitting. La funzione che esegue il fitting,
+lo fa in modo del tutto generale su di un segmento di dati estratto da un
+taglio. Se il fitting è sinistro, i dati andrebbero esaminati in senso
+inverso rispetto al fitting destro, il trattamento è invece uguale per
+entrambi i tipi di fitting ed è la sequenza di dati ad essere invertita.
+
+---------------------------------------------------------------------------
+   LOCDIS
+---------------------------------------------------------------------------
+
+   LOCDIS sta per LOCalizza una DIScontinuità. Contiene la funzione
+Localizza_una_discontinuita che cerca una discontinuità in un taglio fine
+dato effettuando i fitting destro e sinistro per ogni punto, inviduando poi
+i punti in cui entrambi i fitting hanno verosimiglianza sopra la soglia.
+In tali casi si effettua il test di presenza della discontinuità. Tra tutti
+i punti contigui in cui i fitting sono entrambi verosimili e presentano un
+salto o un angolo, si sceglie quello di massima verosimiglianza congiunta
+dei fitting.
+
+---------------------------------------------------------------------------
+   ANADIS
+---------------------------------------------------------------------------
+
+   ANADIS sta per ANAlisi di DIScontinuità. Lo scopo di questo modulo è
+quello di analizzare un dato taglio grossolano in cui sono state
+individuate le discontinuità con la tecnica relativa al taglio grossolano
+per effettuare dei tagli fini nei quali la funzione
+Localizza_una_discontinuita del modulo LOCDIS troverà la discontinuità con
+la strategia per i tagli fini. Si tratta anche di restituire l' elenco delle
+discontinuità trovate mettendoci anche le discontinuità che ci sono tra
+sequenze di punti definiti e punti indefiniti (in corrispondenza dei quali
+non si è avuta misura). Le discontinuità sono messe nell' elenco nell'
+ordine in cui appaiono nel taglio. Ci sono anche le funzioni necessarie
+all' allocazione della memoria necessaria per un elenco di discontinuità.
+
+---------------------------------------------------------------------------
+   ERICPO
+---------------------------------------------------------------------------
+
+   ERICPO sta per Esperimento di RIConoscimento dei POliedri. Si tratta
+delle funzioni che realizzano l' opzione n.ro 4 del menù ovvero il lancio
+di un esperimento di riconoscimento di un doppio diedro tra due possibili
+per mezzo della superficie di compatibilità. Si esegue un taglio casuale sul
+doppio diedro in esame per poi rilevare le 4 discont. che sono prodotte
+dagli spigoli del doppio diedro. In base a tali disc. si esamina l' ipotesi
+che il doppio diedro in osservazione sia il primo o il secondo e si sceglie
+l' ipotesi più verosimile.
+
+*/

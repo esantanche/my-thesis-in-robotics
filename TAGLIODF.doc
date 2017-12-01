@@ -1,0 +1,354 @@
+/*
+Nome file: TAGLIODF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Set 14'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+TAGLIO: Ottenimento di dati tridimensionali facendo inseguire al laser
+        percorsi rettilinei.
+   CREAZI: Creazione di tagli interni o da registrare in file
+      Crea_taglio_rett_int()
+      Crea_taglio_rett_file()
+      Alloca_taglio()
+      Dealloca_taglio()
+   GESFIL: Creazione interattiva di tagli su dati dell' utente o casualmente
+           e gestione dei files
+      Creaz_e_salvat_taglio_rett_inter()
+      Creaz_e_salvat_taglio_rett_cas()
+      Genera_cas_rette_taglio()
+      Scegli_file_taglio_rett()
+      Scegli_e_carica_taglio_rett()
+      Carica_taglio_rett()
+      Esiste_file_tagli()
+   VISUAL: Visualizzazione di tagli registrati in file
+      Carica_e_visual_taglio_rett()
+      Visual_dati_taglio_rett()
+      Visual_graf_taglio_rett()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   CREAZI
+---------------------------------------------------------------------------
+
+Crea_taglio_rett_int()
+°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct modello_rotondo *m : modello rotondo da tagliare
+   struct punto *pp : punto di proiezione laser
+   struct punto pv : punto di vista
+   struct retta rt : retta di taglio
+   int n_punti : numero di punti di cui sarà composto il taglio
+   BOOL no_rum_mod : TRUE se non si vuole che venga simulato il rumore
+      di modello nell' effettuazione delle misure
+Elaborazioni: Suddivisa la retta di taglio in n_punti intervalli, si
+   ricavano n_punti rette di proiezione laser e si chiama Triangola_modrot
+   per ottenere la misura di distanza e il punto tridimensionale relativi
+   all' intersezione della retta di proiezione con il modello. Si ottiene
+   sia la misura ideale ovvero quella priva di rumore, sia quella rumorosa.
+Output su parametri:
+   struct taglio_rett_int huge *t : taglio prodotto
+Relazione con altre funzioni:
+   usa:
+Triangola_modrot() che restituisce la misura di distanza (e anche il punto
+   nello spazio tridimensionale) relativa ad un punto del taglio
+Punto_da_retta(), Crea_retta()
+
+Crea_taglio_rett_file()
+°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   int n_modello : numero d'ordine, nel file dei modelli, del modello in
+      esame
+   struct modello_rotondo *m : modello in esame (da tagliare)
+   struct punto *pp : punto di proiezione laser
+   struct punto pv : punto di vista (PSD)
+   struct retta rt : retta di taglio
+   int n_punti : numero di punti di cui si vuole composto il taglio
+   BOOL no_rum_mod : TRUE = non si vuole il rumore di modello nelle misure
+Elaborazioni: esegue il taglio chiamando Crea_taglio_rett_int() per poi
+   corredare il taglio di altre informazioni richieste dalla struttura
+   taglio_rett_file dei tagli destinati ad essere salvati su file. Per es.
+   si aggiunge la data di creazione, il punto di proiezione laser ecc.
+Output su parametri:
+   struct taglio_rett_file *t : taglio prodotto
+Relazione con altre funzioni:
+   usa:
+Crea_taglio_rett_int() che crea il taglio privo però dei dati aggiuntivi
+   richiesti in un taglio_rett_file
+Crea_campo() serve a convertire la stringa della data in un campo ovvero
+   ad eliminarne il NULL finale
+Alloca_taglio(), Dealloca_taglio()
+
+Alloca_taglio()
+°°°°°°°°°°°°°°°
+Elaborazioni: alloca memoria per un taglio interno
+Output su valore di ritorno: struct taglio_rett_int huge *
+   puntatore al taglio allocato
+
+Dealloca_taglio()
+°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : puntatore al taglio da deallocare
+Elaborazioni: dealloca la memoria relativa al taglio puntato da t, rendendo
+   quest'ultimo invalido
+
+---------------------------------------------------------------------------
+   GESFIL
+---------------------------------------------------------------------------
+
+Creaz_e_salvat_taglio_rett_inter()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Elaborazioni: si chiedono all' utente tutti i dati necessari all' esecuzione
+   del taglio ovvero il numero del modello, i punti di proiezione laser e di
+   vista, i dati della retta di taglio e il numero di punti sul taglio.
+   si chiama Crea_taglio_rett_file per la creazione del taglio e poi lo
+   si salva sul file fornendo anche la misura del tempo impiegato per il
+   calcolo. Il path del file su cui salvare il taglio viene composto
+   concatenando PATH_FILE_TAGLIO con due lettere finali del nome del file,
+   date dall' utente, e con l' estensione FL.
+Output su file: taglio_file di path composto da PATH_FILE_TAGLIO
+   si salva il taglio creato in coda al file
+Relazione con altre funzioni:
+   usa:
+Crea_taglio_rett_file() che crea il taglio
+Carica_modrot() che carica in memoria il modello interessato
+Crea_retta()
+
+Creaz_e_salvat_taglio_rett_cas()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Elaborazioni: si vogliono eseguire tagli scelti casualmente su di un certo
+   numero di modelli e facendo uso di un certo numero di sistemi di
+   triangolazione. Si chiedono quindi il numero del primo e dell' ultimo
+   modello rotondo da usare e il numero del primo e dell' ultimo sistema
+   di triangolazione, verificando che esistano nei rispettivi files.
+   Si chiede poi il numero dei tagli da effettuare per ognuna delle 8 coppie
+   punto di proiezione laser - punto di vista di cui è composto un sistema
+   di triangolazione. Si produce quindi una previsione del tempo necessario
+   per eseguire tutti i tagli richiesti e si chiede quindi conferma per
+   proseguire all' esecuzione. Si chiedono poi le ultime due lettere del
+   nome del file che dovrà contenere i tagli prodotti. Se il file non esiste
+   viene creato, altrimenti i tagli sono posti in coda al file. Viene
+   prodotto un report, ancora su file, in cui si dice per esempio che i
+   tagli aventi i numeri d'ordine nel file dal 20 al 24, sono stati
+   realizzati sul modello 15 usando il sistema di triangolazione 20 e sono
+   relativi alle coppie punto proiez. - punto di vista che sono sopra o
+   sotto o di lato al modello. Precisamente le coppie punto proiez. - punto
+   di vista sono 8 però raccolte in 4 gruppi: le 2 coppie assiali superiori,
+   le 2 coppie assiali inferiori, le 2 coppie laterali superiori e le 2
+   coppie laterali inferiori. All' interno di questi gruppi le coppie si
+   distinguono per la base-line che ha due valori (si veda quanto detto sui
+   sistemi di triangolazione) ma tale distinzione non è riportata nel report
+   in cui i tagli fatti con le due base-line sono messi assieme. Le coppie
+   assiali superiori sono quelle che vedono l' oggetto da sopra, quelle
+   assiali inferiori sono quelle che vedono l' oggetto da sotto, quelle
+   laterali vedono l' oggetto di lato e quelle superiori hanno il punto
+   di vista più in alto rispetto al punto di proiez. mentre quelle inferiori
+   hanno il punto di vista più in basso. Tale report è utile per
+   interpretare i tagli quando si vuole visualizzarli o per cercare un
+   taglio relativo ad un modello di interesse. C'è poi il ciclo che itera
+   su tutti i modelli e i sistemi di triang. richiesti e genera casualmente
+   le rette di tagli facendo uso della funzione Genera_cas_rette_taglio.
+   Le coppie punto proiez. - punto di vista che differiscono solo per la
+   lunghezza della base - line, vengono utilizzate con una stessa retta di
+   taglio per evidenziare, a parità di altri fattori, la differenza che
+   c'è tra usare l' una o l' altra lunghezza della base - line. Nel file
+   si troveranno quindi sempre contigui il taglio fatto sulla data retta di
+   taglio con una base - line e quello effettuato con la stessa retta di
+   taglio ma con la seconda base - line. La variabile offset corrisponde
+   proprio alla base - line (si veda il rilocamento dei sist. di triang.).
+   Infine si visualizza il tempo impiegato.
+Output su file: taglio_file di path composto da PATH_FILE_TAGLIO;
+                report di path come quello di taglio_file però con
+                   estensione FLR
+   taglio_file conterrà i tagli prodotti, report conterrà il report e sarà
+   creato oppure sovrascritto se esistente
+Relazione con altre funzioni:
+   usa:
+Carica_modrot() che carica i modelli rotondi
+Carica_sist_triang() che carica i sistemi di triang.
+Riloca_sist_triang() che riloca i sistemi di triang. in funzione del modello
+Genera_cas_rette_taglio() che genera casualmente rette di taglio
+Crea_taglio_rett_file() che crea un taglio destinato ad essere salvato su
+   file
+
+Genera_cas_rette_taglio()
+°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   int n_base_line : numero identificante il tipo di base line
+   struct modello_rotondo *m : modello rotondo per il quale va calcolata
+      la retta di taglio
+Elaborazioni: n_base_line vale 0 per le base line assiali superiori, 1 per
+   quelle assiali inferiori, 2 per quelle laterali superiori, 3 per quelle
+   laterali inferiori. In funzione di ciò si genera la retta. Nel caso
+   delle base line assiali la retta di taglio viene scelta con gli estremi
+   posti su due lati opposti di un quadrato di lato pari al diametro massimo dei cerchi
+   del modello più un allungamento di sicurezza di 2*ALL_RETTA mm. Tale
+   quadrato va pensato su di un piano parallelo al piano x-y e centrato
+   sull' asse z. Per le base line assiali superiori tale quadrato viene
+   posto ad una altezza pari alla massima quota z del modello, per le base
+   line assiali inferiori, si pone il quadrato alla minima (anche negativa)
+   quota z del modello. Per le base line laterali gli estremi della retta di
+   taglio sono presi su due lati opposti di un rettangolo la cui altezza è
+   pari all' altezza complessiva del modello e la cui larghezza è pari alla
+   larghezza complessiva del modello (salvo aggiunta di ALL_RETTA mm per
+   sicurezza). Per quanto riguarda le base line laterali, precisiamo che
+   gli estremi della retta di taglio sono scelti su una delle due coppie
+   di lati opposti del rettangolo in modo tale che la retta di taglio sia
+   più lunga. Quindi si tratterà della coppia di lati più corti del
+   rettangolo.
+Output su valore di ritorno: struct retta
+   retta di taglio generata
+Relazione con altre funzioni:
+   usa:
+Crea_retta() che crea la retta di taglio
+
+Scegli_file_taglio_rett()
+°°°°°°°°°°°°°°°°°°°°°°°°°
+Elaborazioni: permette all' utente di scegliere un file di tagli da
+   usare dando le ultime due lettere del nome, lettere che identificano
+   il file. Se l'utente inserisce '+', si esce ritornando TRUE. Si controlla
+   che il file richiesto esista.
+Output su parametri:
+   char lettere[3] : si ritorna la stringa di due caratteri (comprensiva
+      di NULL) che identifica il file di tagli richiesto
+Output su valore di ritorno: BOOL
+   si ritorna TRUE se l' utente ha deciso di uscire dal programma senza
+   scegliere il file
+Relazione con altre funzioni:
+   usa:
+Esiste_file_tagli() che risponde TRUE se un file di tagli, identificato da
+   due lettere, esiste
+
+Scegli_e_carica_taglio_rett()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   char lettere[3] : lettere identificanti il file che contiene il taglio
+      da scegliere
+Elaborazioni: si chiede all' utente il numero d'ordine, nel file dei tagli
+   identificato dalle lettere date, del taglio che vuole scegliere, e si
+   procede al suo caricamento controllando che tale taglio esista.
+Output su parametri:
+   struct taglio_rett_file *t : taglio richiesto
+Output su valore di ritorno: int
+   ritorna il numero d' ordine nel file del taglio richiesto oppure 0
+   se l'utente ha inserito 0 perché vuole uscire dal programma
+Relazione con altre funzioni:
+   usa:
+Carica_taglio_rett() che carica il taglio richiesto
+
+Carica_taglio_rett()
+°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   char lettere[3] : lettere identificative del file dei tagli da usare
+   int num_taglio : numero d'ordine del taglio richiesto nel file
+Input da file: taglio_file di path composto da PATH_FILE_TAGLIO
+   file dei tagli contenente il taglio da caricare
+Elaborazioni: si carica il taglio richiesto del file specificato
+Output su parametri:
+   struct taglio_rett_file *t : taglio richiesto
+Output su valore di ritorno: BOOL
+   TRUE se il taglio richiesto non è presente nel file
+
+Esiste_file_tagli()
+°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   char lettere[3] : lettere identificanti il file di tagli di cui è
+      richiesto di accertare l' esistenza
+Input da file: taglio_file di path composto da PATH_FILE_TAGLIO
+   file dei tagli di cui accertare l' esistenza
+Elaborazioni: si restituisce TRUE se il file esiste
+Output su valore di ritorno: BOOL
+   TRUE se il file esiste
+
+---------------------------------------------------------------------------
+   VISUAL
+---------------------------------------------------------------------------
+
+Carica_e_visual_taglio_rett()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Elaborazioni: Facendo uso delle funzioni Scegli_file_taglio_rett e
+   Scegli_e_carica_taglio_rett si sceglie prima il file dei tagli poi il
+   singolo taglio da caricare. Si chiamano poi Visual_dati_taglio_rett e
+   Visual_graf_taglio_rett per visualizzare i dati identificativi del taglio
+   e le videate grafiche che illustrano il taglio
+Relazione con altre funzioni:
+   è_composta_da:
+Visual_dati_taglio_rett() che visualizza i dati identif. del taglio
+Visual_graf_taglio_rett() che visualizza le videate grafiche
+   usa:
+Scegli_file_taglio_rett() che chiede all' utente il file da usare
+Scegli_e_carica_taglio_rett() che chiede all' utente il taglio da
+   visualizzare
+
+Visual_dati_taglio_rett()
+°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   char lettere[3] : lettere identificanti il file dei tagli
+   int num_taglio : numero d'ordine del taglio nel file
+   struct taglio_rett_file *t : taglio da visualizzare
+Elaborazioni: lettere e num_taglio sono richiesti per visualizzarli.
+   Si visualizzano tutti i dati contenuti nel taglio (struttura
+   taglio_rett_file) escluse le misure di distanza che vengono visualizzate
+   graficamente
+Relazione con altre funzioni:
+   usa:
+Crea_str_da_campo() che serve a trasformare in stringhe visualizzabili i
+   campi della data e dell' ora di creazione presenti nella struttura
+   taglio_rett_file
+
+Visual_graf_taglio_rett()
+°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   char lettere[3] : lettere identificanti il file dei tagli
+   int num_taglio : numero d'ordine del taglio nel file
+   struct taglio_rett_file *t : taglio da visualizzare
+Elaborazioni: si inizia chiedendo se si desidera l' invio alla Clipboard
+   della videata dei punti cioè della videata in cui il taglio è
+   visualizzato come proiezione ortogonale su uno dei piani x-y, y-z, x-z.
+   Per decidere quale delle tre possibili proiezioni ortogonali usare,
+   si calcola l' area dell' ellisse centrale di inerzia dei punti ottenuti
+   per proiezione sui tre piani suddetti e si sceglie il piano tale che
+   l' ellisse ha area massima. Per fare ciò si calcoleranno i momenti di
+   inerzia delle proiezioni dei punti sui piani suddetti e tutte le altre
+   grandezze correlate. Il piano di proiezione scelto verrà indicato nel
+   titolo della finestra. In base alle ordinate e alle ascisse massime e
+   minime si valuterà la scalatura da applicare agli assi in modo che
+   la videata riempia il più possibile il video pur fornendo una
+   visualizzazione in scala. Si metteranno le indicazioni dei centimetri
+   sugli assi, mettendole per es. sul lato destro dello schermo se l'
+   asse è in realtà fuori schermo, a destra. Un cerchio vuoto indica
+   l' origine, se visibile. I puntini sono i punti ideali, le croci sono
+   quelli rumorosi. Nel titolo della finestra è indicata la coppia di
+   lettere che identificano il file e il numero d'ordine del taglio nel
+   file. La seconda videata mostra il taglio come funzione di distanza.
+   In ascisse ci sono i numeri naturali da 1 al numero di punti del taglio.
+   In ordinate ci sono le distanze. Anche qui ci sono le croci che indicano
+   i centimetri sull' asse delle ordinate. La scalinata è relativa alle
+   misure ideali e viene interrotta quando le misure sono indefinite. Le
+   croci sono le misure rumorose.
+Relazione con altre funzioni:
+   usa:
+Apri_fin_graf(), Chiudi_fin_graf()  apertura e chiusura della fin. grafica
+Usa_rif_2d() definizione riferimento utente
+Cerchio_vuoto(), Croce(), Mostra_disegno(), Vai_a(), Linea_a() funzioni
+   di disegno grafico
+
+*/

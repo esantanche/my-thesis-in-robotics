@@ -1,0 +1,264 @@
+/*
+Nome file: GRABASDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ago 25'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+GRABAS: Grafica di base
+   INIZIA: Inizializzazioni del sistema grafico
+      Inizializza_grafica()
+      messaggi_finestra()
+   GESFIN: Gestione finestre (apri e chiudi)
+      Apri_fin_graf()
+      Chiudi_fin_graf()
+   CLPBRD: Invio videate alla Clipboard
+      Invia_a_clipboard()
+   DISEGN: Disegno di linee e punti su video in riferimento utente
+      Mostra_disegno()
+      Usa_rif_2d()
+      Croce()
+      Vai_a()
+      Linea_a()
+      Cerchio_pieno()
+      Cerchio_vuoto()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   INIZIA
+---------------------------------------------------------------------------
+
+Inizializza_grafica()
+°°°°°°°°°°°°°°°°°°°°°
+Input da variabili globali:
+   nome_classe_fin_graf : nome della classe di finestra per l' istruzione
+      RegisterClass
+   h_programma : handle del programma per la funzione RegisterClass che deve
+      dichiarare il proprietario della classe di finestre
+Elaborazioni: Inizializzazione della grafica: si avvia il sistema
+   Easy Window per l' utilizzo delle istruzioni printf e scanf su
+   finestra e si registra la classe di finestra (funzione RegisterClass di
+   sistema) da usare poi per la creazione della finestra grafica in
+   Apri_fin_graf()
+
+messaggi_finestra()
+°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   HWND wnd : identificatore finestra
+   WORD msg : messaggio trasmesso dal sistema alla finestra e che dobbiamo
+      qui elaborare
+   WORD wpar : parametri del messaggio
+   long lpar : parametri del messaggio
+Input da variabili globali:
+   DC_hide : Device Context della finestra nascosta contenente la videata
+   DC_fin_graf : Device Context della finestra reale
+Elaborazioni: Questa è la funzione che gestisce i messaggi inviati alla
+   finestra grafica. Se il messaggio inviato alla finestra è WM_MOVE o
+   WM_ACTIVATE ovvero la finestra è stata mossa dall' utente oppure è
+   stata attivata ovvero portata in primo piano, essa apparirebbe vuota se
+   non si provvedesse, come si fa in questa funzione, a ridisegnarla
+   copiando nella finestra la videata che viene conservata in un area di
+   memoria nascosta corrispondente al Device Context DC_hide. Se arrivano
+   altri messaggi, essi vengono passati alla funzione standard di gestione
+   dei messaggi, DefWindowProc.
+Output su valore di ritorno: long
+   codice di ritorno fornito da DefWindowProc oppure 0L nel caso dei
+   messaggi WM_MOVE e WM_ACTIVATE.
+
+---------------------------------------------------------------------------
+   GESFIN
+---------------------------------------------------------------------------
+
+Apri_fin_graf()
+°°°°°°°°°°°°°°°
+Input da parametri:
+   LPSTR titolo_fin_graf : titolo della finestra grafica (viene visualizzato
+      in alto nella finestra grafica)
+Input da variabili globali:
+   nome_classe_fin_graf : nome della classe di finestra per l' istruzione
+      CreateWindow
+   h_programma : handle del programma per la funzione CreateWindow che deve
+      dichiarare il proprietario della finestra
+Elaborazioni: viene creata la finestra grafica della quale viene
+   rintracciato il Device Context che viene memorizzato in DC_fin_graf. Esso
+   serve per le operazioni di disegno. Si crea poi un Device Context
+   nascosto (DC_hide) per il quale si crea una bitmap sulla quale si
+   disegnerà. Occorrerà trasmettere tale bitmap nascosta alla finestra
+   grafica affinché ciò che si è disegnato sia visibile. Questa operazione è
+   svolta da Mostra_disegno().
+Output su variabili globali:
+   DC_fin_graf : Device Context della finestra grafica
+   DC_hide : Device Context nascosto
+   fin_graf : handler della finestra grafica creata
+   bitmap_nascosta : è la bitmap associata al Device Context nascosto ovvero
+      quella su cui si disegna
+   struttura_paint : struttura delle informazioni relative al disegno sulla
+      finestra nascosta
+
+Chiudi_fin_graf()
+°°°°°°°°°°°°°°°°°
+Input da parametri:
+   BOOL invia_a_clipboard : TRUE se è richiesto l'invio della videata alla
+      Clipboard
+Input da variabili globali:
+   DC_hide : Device Context nascosto
+   bitmap_nascosta : è la bitmap associata al Device Context nascosto ovvero
+      quella su cui si disegna e che va distrutta o inviata alla Clipboard
+   struttura_paint : struttura delle informazioni relative al disegno sulla
+      finestra nascosta
+Elaborazioni: si chiude il disegno, si cancella il Device Context nascosto,
+   si invia la bitmap alla Clipboard oppure la si distrugge, si distrugge la
+   finestra grafica
+Output su variabili globali:
+   DC_fin_graf : Device Context della finestra grafica che non è più
+      utilizzabile essendosi distrutta la finestra grafica
+   DC_hide : Device Context nascosto che viene distrutto
+   fin_graf : handler della finestra grafica che viene chiusa
+   bitmap_nascosta : è la bitmap associata al Device Context nascosto ovvero
+      quella su cui si disegna e che va distrutta o inviata alla Clipboard
+   struttura_paint : struttura delle informazioni relative al disegno sulla
+      finestra nascosta che scompare
+Relazione con altre funzioni:
+   è_composta_da:
+Invia_a_clipboard() che si occupa di inviare la bitmap alla clipboard
+
+---------------------------------------------------------------------------
+   CLPBRD
+---------------------------------------------------------------------------
+
+Invia_a_clipboard()
+°°°°°°°°°°°°°°°°°°°
+Input da variabili globali:
+   fin_graf : handler della finestra grafica
+   bitmap_nascosta : è la bitmap associata al Device Context nascosto ovvero
+      quella su cui si disegna e che va inviata alla Clipboard
+Elaborazioni: si apre la Clipboard, la si vuota, si consegna alla Clipboard
+   la bitmap, si chiude la Clipboard
+Output su variabili globali:
+   bitmap_nascosta : è la bitmap associata al Device Context nascosto ovvero
+      quella su cui si disegna e che diviene proprietà della Clipboard
+      quindi non è più accessibile
+
+---------------------------------------------------------------------------
+   DISEGN
+---------------------------------------------------------------------------
+
+Mostra_disegno()
+°°°°°°°°°°°°°°°°
+Input da variabili globali:
+   DC_fin_graf : Device Context della finestra grafica
+   DC_hide : Device Context nascosto
+Elaborazioni: si copia la bitmap nascosta sulla finestra grafica al fine di
+   visualizzarla ovvero al fine di visualizzare il risultato dei disegni
+   fatti sulla bitmap nascosta.
+
+Usa_rif_2d()
+°°°°°°°°°°°°
+Input da parametri:
+   struct riferimento_2d rif_da_usare : riferimento utente da usare nelle
+      funzioni di disegno grafica
+Elaborazioni: assegna alla variabile globale rif_2d contenente il
+   riferimento utente in uso, il riferimento rif_da_usare. Il riferimento
+   utente è descritto in THVARGLO.H e in THSTRUCT.H che rispettivamente
+   parlano della var. globale rif_2d e della sua struttura (riferimento_2d).
+Output su variabili globali:
+   rif_2d : variabile globale contenente il riferimento utente in uso
+
+Croce()
+°°°°°°°
+Input da parametri:
+   float x, float y : coordinate utente del punto centrale della croce
+   int dim : dimensione della croce (0 = punto singolo)
+Input da variabili globali:
+   rif_2d : variabile globale contenente il riferimento utente in uso
+   DC_hide : Device Context nascosto
+Elaborazioni: disegna una croce il cui centro è in x,y e che si riduce ad un
+   punto singolo se dim==0, è la croce minima se dim==1, aumenta di un pixel
+   alla volta per ogni incremento unitario di dim (rimanendo simmetrica).
+Output su valore di ritorno: BOOL
+   TRUE se il punto x,y è fuori video (dato il riferimento corrente rif_2d)
+
+Vai_a()
+°°°°°°°
+Input da parametri:
+   float x, float y : coordinate utente del punto in cui spostare il
+      'cursore grafico'
+Input da variabili globali:
+   rif_2d : variabile globale contenente il riferimento utente in uso
+   DC_hide : Device Context nascosto
+Elaborazioni: sposta il cursore grafico in x,y in modo tale che una
+   successiva istruzione Linea_a() disegni una linea da x,y al punto dato
+   a Linea_a()
+Output su valore di ritorno: BOOL
+   TRUE se il punto x,y è fuori video (dato il riferimento corrente rif_2d)
+      (però il cursore grafico è comunque portato nella posizione x,y)
+
+Linea_a()
+°°°°°°°°°
+Input da parametri:
+   float x, float y : punto finale della linea
+Input da variabili globali:
+   rif_2d : variabile globale contenente il riferimento utente in uso
+   DC_hide : Device Context nascosto
+Elaborazioni: traccia una linea dal punto in cui si trova il cursore grafico
+   posizionato da Vai_a(), al punto x,y che non è compreso nella linea
+   tracciata. Ovvero: se a Vai_a() dò un punto, e a Linea_a() dò le
+   coordinate di un pixel adiacente al primo, viene disegnato un solo pixel,
+   non due. In quanto detto va ricordato, a scanso di equivoci, che le
+   coordinate dei punti sono sempre in coordinate utente e non video.
+   Annotiamo infine che la posizione del cursore grafico non è alterata da
+   Cerchio_pieno() e Cerchio_vuoto() ma solo da Vai_a(), Linea_a(), Croce().
+Output su valore di ritorno: BOOL
+   TRUE se il punto x,y è fuori video (dato il riferimento corrente rif_2d)
+      (però la linea è comunque tracciata per la parte che rientra nel
+      riquadro video)
+
+Cerchio_pieno()
+°°°°°°°°°°°°°°°
+Input da parametri:
+   float x, float y : punto corrispondente al centro del cerchio
+   int raggio : raggio del cerchio
+Input da variabili globali:
+   rif_2d : variabile globale contenente il riferimento utente in uso
+   DC_hide : Device Context nascosto
+Elaborazioni: si traccia un cerchio pieno il cui diametro complessivo è
+   pari a raggio*2+1 (pixel). Se raggio=0 si traccia un punto soltanto.
+Output su valore di ritorno: BOOL
+   TRUE se il punto x,y è fuori video (dato il riferimento corrente rif_2d)
+      (però il cerchio è comunque disegnato per la parte che rientra nel
+      riquadro video)
+
+Cerchio_vuoto()
+°°°°°°°°°°°°°°°
+Input da parametri:
+   float x, float y : punto corrispondente al centro del cerchio
+   int raggio : raggio del cerchio
+Input da variabili globali:
+   rif_2d : variabile globale contenente il riferimento utente in uso
+   DC_hide : Device Context nascosto
+Elaborazioni: si traccia un cerchio vuoto il cui diametro complessivo è
+   pari a raggio*2+1 (pixel). Se raggio=0 si traccia un punto soltanto.
+Output su valore di ritorno: BOOL
+   TRUE se il punto x,y è fuori video (dato il riferimento corrente rif_2d)
+      (però il cerchio è comunque disegnato per la parte che rientra nel
+      riquadro video)
+
+*/

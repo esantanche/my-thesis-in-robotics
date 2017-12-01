@@ -1,0 +1,126 @@
+/*
+Nome file: ERICPODF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 20'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+ERICPO: Lancio di un esperimento di riconoscimento dei poliedri
+   ERICPO: Lancio di un esperimento di riconoscimento dei poliedri
+      Esperimento_di_ric_poliedri()
+      Presentazione_e_parametri()
+      Esegui_un_riconoscimento()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   ERICPO
+---------------------------------------------------------------------------
+
+Esperimento_di_ric_poliedri()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da variabili globali:
+   POLI : identificatore del poliedro in uso
+Elaborazioni: si chiede il numero di tentativi di riconoscimento da fare,
+   si chiede se si vuole che dopo ogni tentativo venga chiesto di digitare
+   un return oppure se l'esecuzione deve procedere automaticamente, si
+   chiede il nome del file (senza estensione). Se il file già esiste si
+   ripete la richiesta. Poi si inizializzano i filtri per la rilevazione
+   delle discontinuità e si scrive sul report la presentazione facendo uso
+   di Presentazione_e_parametri(). Poi si avviano le iterazioni che vengono
+   eseguite chiamando Esegui_un_riconoscimento(). Si calcolano le
+   statistiche che andranno nel report. Si ricorda che l'errore medio e
+   l'istogramma di frequenza degli errori sono calcolati solo sui casi di
+   successo nel riconoscimento del poliedro. La percentuale dei successi è
+   riferita al numero di casi in cui si sono ottenute le quattro disc. sui
+   quattro spigoli del doppio diedro e non sul totale delle iterazioni. Se
+   il sensore per qualche motivo non riesce a rilevare quattro discont., il
+   riconoscimento non può essere fatto. Infine si completa il report con i
+   risultati.
+Output su file: r di path composto usando PATH_REPORT_ERICPO, il nome dato
+                dall'utente e l' estensione RPT
+   file che conterrà il report
+Relazione con altre funzioni:
+   è_composta_da:
+Presentazione_e_parametri() che mette nel report i parametri usati nell'
+   esperimento
+Esegui_un_riconoscimento() che esegue un tentativo di riconoscimento
+   usa:
+Inizializza_filtri(), Dealloca_filtri() che inizializzano e deallocano i
+   filtri necessari per la rilevazione delle discontinuità
+
+Presentazione_e_parametri()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   FILE *r : puntatore al file del report
+   char path[40] : path del file del report
+   int iterazioni : numero di tentativi di riconoscimento del doppio diedro
+      che sono stati richiesti
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+   POLI : identificatore del poliedro in uso
+Elaborazioni: scrittura sul file dei valori delle macro rilevanti e di
+   'iterazioni'. Si scrive anche la descrizione dei filtri di
+   fitting e il numero del poliedro in uso (POLI)
+Output su file: r di path path (parametro)
+   è il file del report
+
+Esegui_un_riconoscimento()
+°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da variabili globali:
+   DIE[] : parametri intrinseci dei due doppi diedri
+   POLI : indicatore del poliedro in uso
+Elaborazioni: si inizia creando il taglio casualmente. Si esce con riuscito
+   =FALSE se risulta un numero di punti definiti minore del 10%. Poi si
+   cercano le discontinuità utilizzando Partiziona_taglio(),
+   Tappa_buchi_dist(), Valuta_rumore(), Trova_discontinuita(),
+   Analizza_discontinuita(). Se le discontinuità sono meno o più di 4, si
+   esce con riuscito=FALSE. Si calcolano i vettori che congiungono le
+   discontinuità ovvero gli l1,l2,l3 della tesi (§ 12.2.3). Poi si tenta il
+   riconoscimento, nel poliedro in uso che è quello su cui si sono fatte le
+   misure, del poliedro n.ro 0 poi del poliedro n.ro 1. Si esegue Mnewt
+   per cercare il quaternione, si calcola la matrice R ((49) di § 12.2.3
+   della tesi, pg. 141) che è la matrice di rotazione corrispondente alla
+   rotazione espressa dal quaternione e che usiamo poi per ricavare le
+   normali ruotate date quelle di riferimento. Poi si calcolano gli angoli
+   fi1 e fi2 che vengono usati nel riconoscimento come detto alla fine di
+   pg. 141 della tesi. Il riconscimento avviene come detto nel § 13.1.
+Output su parametri:
+   double *errore : errore commesso nel riconoscimento
+   int *pol_ric : numero del poliedro riconosciuto (0 o 1)
+   BOOL *riuscito : TRUE se si sono trovate le disc. necessarie per
+      procedere al riconoscimento
+Relazione con altre funzioni:
+   usa:
+Crea_retta() che crea la retta di taglio
+Crea_taglio_rett_int() che esegue il taglio
+Partiziona_taglio()        \
+Tappa_buchi_dist()          |
+Valuta_rumore()              >  funzioni per il rilevamento delle discont.
+Trova_discontinuita()       |
+Analizza_discontinuita()   /
+Mnewt() che risolve iterativamente col metodo di Newton le equazioni che
+   definiscono il quaternione ovvero le (48) di pg.141 della tesi
+Alloca_taglio(), Dealloca_taglio()
+Alloca_elenco_disc(), Dealloca_elenco_disc()
+vector(), ivector(), matrix(), free_vector(), free_ivector(), free_matrix()
+Modulo(), Vett_tra_punti(), Prod_scal(), Prod_vett()
+
+*/

@@ -1,0 +1,150 @@
+/*
+Nome file: ANADISDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 18'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+ANADIS: Chiamata alla funzione di localizzazione fine per ogni disc.
+        trovata grossolanamente in RICDIS
+   ANADIS: Funzioni per l' analisi di un taglio grossolano in cui sono state
+           rilevate le disconitinuità, ed effettuazione dei tagli fini
+           per poi localizzare finemente le discontinuità su di essi
+      Analizza_discontinuita()
+      Calcola_retta_fine()
+   ALLELD: Allocazione e deallocazione di memoria per gli elenchi
+           di discontinuità
+      Alloca_elenco_disc()
+      Dealloca_elenco_disc()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   ANADIS
+---------------------------------------------------------------------------
+
+Analizza_discontinuita()
+°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct modello_rotondo *m : modello rotondo interessato
+   struct punto *pp : punto di proiezione laser
+   struct punto pv : punto di vista
+   struct retta rt : retta di taglio grossolano
+   struct taglio_rett_int huge *t : taglio grossolano
+   struct elenco_part *e : elenco delle partizioni individuate sul taglio
+      grossolano
+   double huge *rumore : stima del rumore fatta sul taglio grossolano
+   int huge *discontinuita : array lungo come il taglio in cui sono
+      riportate le posizioni in cui la rilevazione grossolana delle
+      disc. ha trovato le disc. con indicazione anche del numero d'ordine
+      del filtro che ha effettuato la rilevazione
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Elaborazioni: Si esamina una partizione (di punti definiti e del taglio
+   grossolano) alla volta e la si scandisce alla ricerca di punti in cui
+   la rilevazione grossolana ha trovato delle disc. . In tali situazione
+   e con l' aiuto del n.ro d'ordine del filtro grossolano che ha trovato
+   la disc., si calcola la retta di taglio fine facendo uso della funzione
+   Calcola_retta_fine. Viene eseguito il taglio fine, esso viene
+   partizionato e sottoposto a stima del rumore. Poi si avvia la funzione
+   Localizza_una_discontinuita che localizza la disc. . I dati restituiti
+   da Localizza_una_discontinuita vengono elaborati per ottenere tutti i
+   dati che devono comparire nell' elenco delle disc. (vedi struttura
+   elenco_disc). Alla fine dell' esame di una partizione, c'è l' esame
+   della discontinuità di bordo della partizione. Le discontinuità di bordo
+   sono quelle tra sequenze di punti definiti e sequenze di punti indefiniti
+   ovvero tra una partizione e un altra dato che si succedono
+   alternativamente le partizioni di punti definiti e quelle di punti
+   indefiniti. In tali casi si eseguono fitting aventi come punti di inizio
+   il primo o l' ultimo punto (definito) della partizione ed estesi verso
+   destra o verso sinistra come necessario. Si prova con il primo filtro di
+   fitting per arrivare a quello di numero d' ordine NUM_FILTRI_BORDO. Ci
+   si ferma quando il fitting non fosse accettato (verosimile). Ogni
+   fitting viene ripetuto fino a NUM_TENTATIVI_FITT_BORDO volte se non
+   viene accettato la prima volta per evitare che risposte spurie blocchino
+   prematuramente l' analisi di fitting progressivamente maggiori. Si
+   ottiene così il fitting più grande possibile (entro il limite
+   NUM_FILTRI_BORDO) ovvero il più attendibile. Si ricavano poi di nuovo
+   tutti i dati che vanno inseriti nell' elenco discontinuità. Procedendo in
+   questo modo si ottiene un elenco di discont. in cui le disc. sono nell'
+   ordine in cui appaiono nel taglio.
+Output su parametri:
+   struct elenco_disc huge *ed : elenco delle disc. trovate
+Relazione con altre funzioni:
+   è_composta_da:
+Calcola_retta_fine() che calcola la retta di taglio per un taglio fine
+   usa:
+Crea_taglio_rett_int() che calcola un taglio
+Partiziona_taglio() che esegue la suddivisione in partizioni di un taglio
+Tappa_buchi_dist() che rende definiti punti isolati o coppie di punti
+   non definiti contenuti in una partizione di punti definiti
+Valuta_rumore() che esegue la stima del rumore su di un taglio
+Localizza_una_discontinuita() che localizza una disc. in un taglio fine
+Esegui_fitting() che esegue un fitting
+Versore_da_retta(), Punto_da_retta(), Crea_retta()
+Valuta_polinomio()
+Alloca_taglio(), Dealloca_taglio(), vector(), free_vector()
+
+Calcola_retta_fine()
+°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : taglio grossolano
+   struct retta rt : retta di taglio grossolano
+   int indice_disc : punto (numero d'ordine del punto) di discont.
+      grossolana
+   int fil_disc : n.ro d'ordine del filtro che ha rilevato la disc. gross.
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Elaborazioni: la retta di taglio fine ha lo stesso versore della retta di
+   taglio grossolano. La lunghezza è tale da coprire il supporto (in mm)
+   del filtro grossolano che ha scoperto la disc. moltiplicato per un
+   fattore di sicurezza (INCREM_SUPP) per tenere conto anche del fatto
+   che la rilevazione fine userà filtri di n.ro d'ordine superiore di
+   quello del filtro grossolano che ha scoperto la disc. . La retta fine
+   viene centrata sul punto in cui è stata individuata la disc. in fase di
+   rilev. grossolana ovvero al centro del supporto del filtro grossolano.
+   L' orientamento ovvero il senso di percorrenza della retta fine è lo
+   stesso di quello della retta grossolana.
+Output su parametri:
+   struct retta *rtf : retta di taglio fine
+   int *n_punti : numero di punti che devono comporre il taglio fine
+Relazione con altre funzioni:
+   usa:
+Versore_da_retta(), Vett_per_scal(), Punto_piu_vett(), Crea_retta()
+
+---------------------------------------------------------------------------
+   ALLELD
+---------------------------------------------------------------------------
+
+Alloca_elenco_disc()
+°°°°°°°°°°°°°°°°°°°°
+Elaborazioni: alloca memoria per un elenco di discontinuità (elenco_disc)
+Output su valore di ritorno: struct elenco_disc huge *
+   puntatore all' elenco disc. allocato
+
+Dealloca_elenco_disc()
+°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct elenco_disc huge *ed : puntatore all' elenco di disc. da
+      deallocare
+Elaborazioni: dealloca la memoria relativa all' elenco di disc.
+   (elenco_disc) puntato da ed rendendo questo ultimo invalido
+
+*/

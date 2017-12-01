@@ -1,0 +1,76 @@
+/*
+Nome file: LOCDISDF.DOC
+Autore: Emanuele Maria Santanché
+Progetto: Thesis
+Data inizio: Ott 16'92
+
+###########################################################################
+   ELENCO DELLE FUNZIONI
+###########################################################################
+
+LOCDIS: Localizzazione fine delle discontinuità
+   LOCDIS: Localizzazione fine delle discontinuità
+      Localizza_una_discontinuita()
+
+###########################################################################
+   DESCRIZIONE DELLE FUNZIONI
+###########################################################################
+
+Input da parametri:
+Input da variabili globali:
+Input da file:
+Elaborazioni:
+Output su parametri:
+Output su valore di ritorno:
+Output su variabili globali:
+Output su file:
+Relazione con altre funzioni:
+   è_composta_da:
+   usa:
+
+---------------------------------------------------------------------------
+   LOCDIS
+---------------------------------------------------------------------------
+
+Localizza_una_discontinuita()
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Input da parametri:
+   struct taglio_rett_int huge *t : è il taglio fine su cui eseguire la
+      localizzazione fine della discont.
+   struct elenco_part *e : è l' elenco delle partizioni in cui è stato
+      suddiviso il taglio prima di essere consegnato a questa funzione,
+      in Analizza_discontinuita
+   double huge *rumore : vettore delle stime del rumore fatte sul taglio
+      fine
+   int pos_disc : posizione della discontinuità trovata dal rilevamento
+      grossolano e riportata sul taglio fine
+   int fil_disc : numero d'ordine del filtro grossolano che ha trovato
+      la disc.
+Input da variabili globali:
+   descr_filtri[] : descrizione dei filtri di fitting
+Elaborazioni: si esaminano le partizioni di punti definiti del taglio
+   eseguendo i fitting prima destro poi sinistro su tutti i punti del
+   taglio. Si determinano gli intervalli nei quali i fitting risultano
+   contemporaneamente verosimili. Si riesaminano poi sequenzialmente questi
+   risultati individuando i punti, tra quelli in cui i fitting sono
+   entrambi verosimili, in cui c'è discontinuità. Tra i punti in cui c'è
+   discontinuità si sceglie poi quello in cui la verosimiglianza congiunta
+   dei fitting è massima. Se capita di trovare sia un salto che un angolo
+   con questa tecnica, si restituisce quello dei due che ha il maggiore
+   rapporto segnale rumore inteso come rapporto tra salto o angolo
+   rilevato e salto o angolo di soglia al di sotto del quale non si
+   rileva salto o angolo, soglia questa valutata in base al rumore.
+Output su parametri:
+   int *tipo_disc : tipo della disc. trovata (SALTO, ANGOLO, NON_TROVATA)
+   int *pos_fin_disc : posizione della disc.
+   int *filtro_fin : numero d'ordine del filtro che ha localizz. la disc.
+   double *valore_disc : valore del salto o dell' angolo rilevato
+   double huge *coeff_dx : vettore dei coefficienti del polinomio di
+      fitting destro
+   double huge *coeff_sx : vettore dei coefficienti del polinomio di
+      fitting sinistro
+Relazione con altre funzioni:
+   usa:
+Esegui_fitting() che esegue un fitting
+vector(), ivector(), matrix(), free_vector(), free_ivector(), free_matrix()
+*/
