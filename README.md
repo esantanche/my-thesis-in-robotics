@@ -1,4 +1,4 @@
-# Project Title
+# Simulator of laser sensor for industrial robots
 
 This is my graduation thesis. I used C++ to simulate a laser sensor that improves accuracy in robotic assembly operations.
 
